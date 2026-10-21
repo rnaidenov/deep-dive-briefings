@@ -1,17 +1,56 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><link rel=icon href="data:,"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#2b1a12"><title>Deep Dive · briefings for Rado</title><style>
-@font-face{font-family:Inter;font-weight:400;src:url(grinder/fonts/inter-latin-400-normal.woff2) format('woff2')}@font-face{font-family:Inter;font-weight:700;src:url(grinder/fonts/inter-latin-700-normal.woff2) format('woff2')}
-@font-face{font-family:Fraunces;font-weight:700;src:url(grinder/fonts/fraunces-latin-700-normal.woff2) format('woff2')}@font-face{font-family:Fraunces;font-style:italic;src:url(grinder/fonts/fraunces-latin-400-italic.woff2) format('woff2')}
-*{box-sizing:border-box}body{margin:0;font:17px/1.6 Inter,system-ui,sans-serif;background:#fbf4ea;color:#2b1a12}
-header{background:radial-gradient(circle at 80% 10%,#6b4029 0,#2b1a12 60%);color:#f3e4d0;padding:64px 20px}
-.wrap{max-width:820px;margin:auto}h1,h2{font-family:Fraunces,Georgia,serif;line-height:1.1}h1{font-size:clamp(2.4rem,9vw,4rem);margin:.2em 0}h1 em{font-style:italic;font-weight:400;color:#e2b366}
-.k{letter-spacing:.14em;text-transform:uppercase;font-size:.75rem;font-weight:700;color:#e2b366}main{padding:40px 20px}
-a.card{margin-bottom:16px;display:flex;gap:18px;align-items:center;text-decoration:none;color:inherit;background:#fffaf3;border:1px solid #f0e2cf;border-radius:22px;padding:22px;box-shadow:0 10px 30px -18px rgba(43,26,18,.45);transition:transform .2s}
-a.card:hover{transform:translateY(-3px)}a.card svg{flex:0 0 80px;width:80px;height:80px}a.card h2{margin:0 0 .2em;font-size:1.6rem}a.card p{margin:0;color:#7a6255}
-footer{padding:20px;color:#7a6255;font-size:.85rem;text-align:center}
-</style></head><body><header><div class="wrap"><div class="k">Deep Dive</div><h1>Briefings,<br><em>brewed slowly.</em></h1><p>Sourced explainers for Rado, with diagrams, interactives and audio.</p></div></header>
-<main class="wrap"><h2 style="font-family:Fraunces,serif">Topics</h2>
-<a class="card" href="bg-president-2026/"><svg viewBox="0 0 100 100" aria-hidden="true"><clipPath id="cp"><circle cx="50" cy="50" r="46"/></clipPath><g clip-path="url(#cp)"><rect width="100" height="34" fill="#fff"/><rect y="33" width="100" height="34" fill="#00966E"/><rect y="66" width="100" height="34" fill="#D62612"/></g><circle cx="50" cy="50" r="46" fill="none" stroke="#2b1a12" stroke-width="2"/></svg>
-<div><div class="k" style="color:#00966E">Politics · 21 Oct 2026</div><h2>Bulgaria's presidential election</h2><p>Neutral, sourced: what the president can do, the two-round rule, the candidates and the polls before the 25 Oct vote. ~13 min audio.</p></div></a>
-<a class="card" href="grinder/"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="#d9efe9"/><circle cx="50" cy="50" r="30" fill="#8b5a3c"/><circle cx="50" cy="50" r="10" fill="#e2b366"/></svg>
-<div><div class="k" style="color:#8b5a3c">Coffee · 21 Oct 2026</div><h2>Grinders</h2><p>What does a better grinder buy you for espresso? C3 Pro vs Sculptor 078S and alternatives. ~9 min audio.</p></div></a></main>
-<footer>Deep Dive</footer></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="data:,">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#13204a">
+<title>Deep Dive · briefings for Rado</title>
+<link rel="stylesheet" href="_kit/kit.css">
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <span class="kicker">Deep Dive</span>
+    <h1>Briefings, <em class="accent">from first principles.</em></h1>
+    <p class="lede">Sourced explainers for Rado, with diagrams, interactives and audio.</p>
+  </div>
+</header>
+
+<main class="section"><div class="wrap">
+  <h2>Topics</h2>
+  <div class="topics" id="topics">
+    <noscript><a class="card" href="grinder/"><h3>The grind, explained</h3><p>Coffee · 21 Oct 2026</p></a></noscript>
+  </div>
+</div></main>
+<footer class="footer"><div class="wrap">Deep Dive</div></footer>
+
+<script>
+/* Add new topics at the top. slug = folder name. color: coral | sun | mint | sky | violet | pink */
+var TOPICS = [
+  { slug: 'bg-president-2026', title: "Bulgaria's presidential election", kicker: 'Politics', date: '2026-10-21', color: 'mint',
+    blurb: 'Neutral, sourced: what the president can do, the two-round rule, the candidates and the polls before the 25 Oct vote.', meta: '~13 min audio' },
+  { slug: 'grinder', title: 'The grind, explained', kicker: 'Coffee', date: '2026-10-21', color: 'coral',
+    blurb: 'What does a better grinder buy you for espresso? C3 Pro vs Sculptor 078S and alternatives.', meta: '~9 min audio' }
+];
+
+(function () {
+  var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function date(iso) { var p = (iso || '').split('-'); return p.length === 3 ? +p[2] + ' ' + MONTHS[+p[1] - 1] + ' ' + p[0] : esc(iso); }
+  // Simple flat badge: tinted disc, solid disc, small navy dot.
+  function art(c) {
+    return '<svg class="topic-art" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="48" style="fill:var(--' + c + '-t)"/>' +
+      '<circle cx="50" cy="50" r="30" style="fill:var(--' + c + ')"/><circle cx="62" cy="38" r="10" style="fill:var(--navy)"/></svg>';
+  }
+  var list = TOPICS.slice().sort(function (a, b) { return (b.date || '').localeCompare(a.date || ''); });
+  document.getElementById('topics').innerHTML = list.map(function (t) {
+    var c = /^(coral|sun|mint|sky|violet|pink)$/.test(t.color) ? t.color : 'violet';
+    return '<a class="card topic" href="' + encodeURI(t.slug) + '/">' + art(c) + '<div>' +
+      '<span class="kicker" style="color:var(--' + c + '-d)">' + esc(t.kicker) + ' · ' + date(t.date) + '</span>' +
+      '<h3>' + esc(t.title) + '</h3><p>' + esc(t.blurb) + (t.meta ? ' <b>' + esc(t.meta) + '</b>' : '') + '</p></div></a>';
+  }).join('');
+})();
+</script>
+</body>
+</html>

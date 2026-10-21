@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#13204a">
+<!-- EDIT: page title + description -->
+<title>Compounding, explained · Deep Dive</title>
+<meta name="description" content="Template briefing: how compound growth works, with an interactive chart, a diagram, audio and sources.">
+<script>
+  /* Kit loader. Topic pages live at /<slug>/, so the kit is "../_kit/".
+     The one exception is this template previewed in place at /_kit/template/, where the kit is "../".
+     Leave this block as-is when copying the template. */
+  var KIT = /\/_kit\/template\/(index\.html)?$/.test(location.pathname) ? '../' : '../_kit/';
+  document.documentElement.classList.add('js');
+  document.write('<link rel="stylesheet" href="' + KIT + 'kit.css">');
+  // Failsafe: if the kit scripts didn't load, drop the hidden-until-revealed states.
+  addEventListener('load', function () { if (!(window.Kit && Kit.steps)) document.documentElement.classList.remove('js'); });
+</script>
+<noscript><link rel="stylesheet" href="../_kit/kit.css"></noscript>
+<style>
+  /* Page-specific styles (optional). Pick this page's accent: */
+  :root { --accent: var(--sun); }
+</style>
+</head>
+<body data-step-nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="wrap">
+    <a class="back" href="../">← All briefings</a><br>
+    <!-- EDIT: kicker, title, lede, meta -->
+    <span class="kicker">Money · 21 Oct 2026</span>
+    <h1>Compounding, <em class="accent">explained.</em></h1>
+    <p class="lede">Why money that earns money grows slowly, then suddenly. A placeholder topic that shows off every part of the kit.</p>
+    <div class="meta"><span>⏱ 8 min read</span><span>🎧 ~6 min audio</span><a href="#sources">6 sources</a></div>
+  </div>
+  <!-- Optional hero art. [data-draw] strokes draw on automatically when visible. -->
+  <svg class="hero-art" viewBox="0 0 200 200" aria-hidden="true">
+    <circle cx="100" cy="100" r="92" fill="#1e2d63"/>
+    <circle cx="58" cy="146" r="10" fill="#ffc23d"/>
+    <circle cx="92" cy="128" r="14" fill="#ffc23d"/>
+    <circle cx="134" cy="94" r="20" fill="#ffc23d"/>
+    <circle class="bob" cx="150" cy="52" r="8" fill="#ff6b57"/>
+    <path data-draw d="M30 170 C 90 165, 130 140, 170 40" fill="none" stroke="#1fc8a0" stroke-width="6" stroke-linecap="round"/>
+  </svg>
+</header>
+
+<main>
+
+<!-- ============ STEP 1 · TL;DR ============ -->
+<section data-step="tldr">
+  <div class="wrap">
+    <span class="kicker">The short version</span>
+    <h2>Four things worth knowing</h2>
+    <ol class="points">
+      <li><span class="pill fact">Fact</span>Compounding means your returns earn returns. Growth is a <b>percentage of a growing base</b>. <a class="cite" href="#S1">S1</a></li>
+      <li><span class="pill fact">Fact</span>At 7% a year, money doubles in about <b>10 years</b>; at 10%, in about 7. <a class="cite" href="#S2">S2</a></li>
+      <li><span class="pill est">Estimate</span>Over 30 years, most of the final balance tends to be growth, not deposits. Try it in the chart below.</li>
+      <li><span class="pill op">Opinion</span>Time in the market usually matters more than picking the perfect rate.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ STEP 2 · FIRST PRINCIPLES (tap-to-advance fragments) ============ -->
+<section data-step="idea" data-step-tap>
+  <div class="wrap">
+    <span class="kicker">First principles</span>
+    <h2>From one euro to many</h2>
+    <p>Tap the section, press <b>→</b>, or use the button to build the idea one step at a time.</p>
+
+    <div class="card ill" data-reveal="next">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="#dde9ff"/><circle cx="50" cy="50" r="20" fill="#3d8bff"/></svg>
+      <div><h3>1 · You start with a pile</h3>Call it <i>P</i>. This year it earns a rate <i>r</i>, so it grows to <i>P</i>(1 + <i>r</i>). <a class="cite" href="#S1">S1</a></div>
+    </div>
+    <div class="card ill" data-reveal="next">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="#d4f6ec"/><circle cx="44" cy="54" r="20" fill="#3d8bff"/><circle cx="70" cy="34" r="9" fill="#1fc8a0"/></svg>
+      <div><h3>2 · Next year, the interest earns too</h3>Year two applies <i>r</i> to the bigger pile, giving <i>P</i>(1 + <i>r</i>)². The extra bit is <b>interest on interest</b>.</div>
+    </div>
+    <div class="card ill" data-reveal="next">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="#ece3ff"/><path d="M18 78 C 45 76, 64 64, 82 22" stroke="#8a5cff" stroke-width="7" fill="none" stroke-linecap="round"/></svg>
+      <div><h3>3 · Repeat <i>n</i> times</h3>The curve bends upward. Early years look flat; later years do most of the work.</div>
+    </div>
+    <div class="math" data-reveal="next">A = P (1 + r)<sup>n</sup></div>
+  </div>
+</section>
+
+<!-- ============ STEP 3 · INTERACTIVE CHART ============ -->
+<section data-step="chart">
+  <div class="wrap">
+    <span class="kicker">Interactive</span>
+    <h2>Play with the curve</h2>
+    <div class="card">
+      <span class="pill what">What-if · not advice</span>
+      <!-- Preset chart: everything comes from Kit.chart.presets.compound -->
+      <div data-chart="compound" data-currency="€"></div>
+      <p class="caption">Monthly compounding, constant return, no fees or inflation. Real returns vary year to year. <a class="cite" href="#S3">S3</a></p>
+    </div>
+
+    <div class="card" data-reveal>
+      <h3>Rule of 72</h3>
+      <p class="muted">A fully declarative chart: the curve is defined in the markup with <code>data-fn</code>.</p>
+      <div data-chart data-fn="log(2) / log(1 + x / 100)" data-x="1,15" data-y="0,auto"
+           data-x-label="Yearly return (%)" data-y-label="Years to double" data-y-format="dec"
+           data-label="Exact doubling time" data-aspect="0.5" data-title="Doubling time by return"></div>
+      <p class="caption">72 ÷ rate is a good mental shortcut: at 8% it gives 9 years; the exact answer is 9.0. <a class="cite" href="#S2">S2</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STEP 4 · CUSTOM SVG DIAGRAM (dark band) ============ -->
+<section data-step="snowball" class="band">
+  <div class="wrap">
+    <span class="kicker">Diagram</span>
+    <h2>The snowball, year by year</h2>
+    <p class="lede">Each bar is the balance at the end of a year. Watch the violet slice, interest on interest, take over.</p>
+    <figure>
+      <div id="snowball"></div>
+      <figcaption>€1,000 at 25% a year; the rate is exaggerated so the layers are easy to see. Custom diagram built with <code>Kit.svg</code>.</figcaption>
+    </figure>
+    <div class="toggle" role="group" aria-label="Rate" style="margin-top:14px">
+      <button type="button" data-rate="0.1" aria-pressed="false">10%</button>
+      <button type="button" data-rate="0.25" aria-pressed="true">25%</button>
+      <button type="button" data-rate="0.4" aria-pressed="false">40%</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STEP 5 · CALLOUTS & CARDS ============ -->
+<section data-step="caveats">
+  <div class="wrap">
+    <span class="kicker">Reality check</span>
+    <h2>What the formula leaves out</h2>
+    <div class="grid">
+      <div class="card coral" data-reveal="pop"><div class="stat">2–3%</div><p>Typical yearly inflation eats into real growth. <a class="cite" href="#S4">S4</a></p></div>
+      <div class="card mint" data-reveal="pop"><div class="stat" style="color:var(--mint-d)">0.2%</div><p>A low index-fund fee, versus 1–2% for many active funds. <a class="cite" href="#S5">S5</a></p></div>
+      <div class="card sky" data-reveal="pop"><div class="stat" style="color:var(--sky-d)">−34%</div><p>A single bad year can happen. Averages hide the path. <a class="cite" href="#S6">S6</a></p></div>
+    </div>
+    <div class="callout key" data-reveal><span class="callout-title">Key idea</span>Compounding rewards <b>time</b> more than anything else you control.</div>
+    <div class="callout warn" data-reveal><span class="callout-title">Watch out</span>Fees compound too. A 1% fee over 30 years can cost roughly a quarter of the final balance.</div>
+    <div class="callout tip" data-reveal><span class="callout-title">Tip</span>Automate monthly contributions so they happen without a decision.</div>
+    <div class="callout example" data-reveal><span class="callout-title">Example</span>€200 a month for 30 years at 7% grows to about €244k, from €72k paid in.</div>
+    <div class="callout" data-reveal><span class="callout-title">Note</span>A plain callout for neutral context or definitions.</div>
+    <details><summary>Show the maths for monthly deposits</summary>
+      <p class="math">FV = P(1+i)<sup>n</sup> + D · ((1+i)<sup>n</sup> − 1) / i</p>
+      <p><i>i</i> is the monthly rate, <i>n</i> the number of months, <i>D</i> the monthly deposit.</p>
+    </details>
+  </div>
+</section>
+
+<!-- ============ STEP 6 · LEARNING PATH ============ -->
+<section data-step="path" id="learn">
+  <div class="wrap">
+    <span class="kicker">Go deeper</span>
+    <h2>Learning path</h2>
+    <p class="muted">In order. Each step assumes the one before.</p>
+    <!-- data-level: start | next | deep | expert (sets the colour). data-n: the number shown. -->
+    <ol class="path">
+      <li class="path-step" data-level="start" data-n="1"><div class="path-card">
+        <div class="path-meta"><span>Start here</span><span>Video</span><span>10 min</span></div>
+        <h3><a href="#">Placeholder: a friendly intro video</a></h3>
+        <p>Why it's first: builds intuition with no maths.</p></div></li>
+      <li class="path-step" data-level="next" data-n="2"><div class="path-card">
+        <div class="path-meta"><span>Next</span><span>Article</span><span>20 min</span></div>
+        <h3><a href="#">Placeholder: the formula, worked through</a></h3>
+        <p>Why: connects the curve to the equation.</p></div></li>
+      <li class="path-step" data-level="deep" data-n="3"><div class="path-card">
+        <div class="path-meta"><span>Deep dive</span><span>Book</span><span>6 h</span></div>
+        <h3><a href="#">Placeholder: a book chapter</a></h3>
+        <p>Why: covers risk, sequence of returns and fees.</p></div></li>
+      <li class="path-step" data-level="expert" data-n="4"><div class="path-card">
+        <div class="path-meta"><span>Expert</span><span>Paper</span><span>2 h</span></div>
+        <h3><a href="#">Placeholder: an academic paper</a></h3>
+        <p>Why: the original data behind the claims.</p></div></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ STEP 7 · SOURCES ============ -->
+<section data-step="sources" id="sources" class="sources">
+  <div class="wrap">
+    <span class="kicker">Receipts</span>
+    <h2>Sources</h2>
+    <!-- One <li id="S#"> per source; cite inline with <a class="cite" href="#S#">S#</a>.
+         .src-type variants: (default: web) paper, data, video, forum -->
+    <ol class="source-list">
+      <li id="S1"><span class="src-id">S1</span><div>
+        <a class="src-title" href="#">Placeholder source title</a>
+        <span class="src-meta"><span class="src-type">Web</span>Publisher · 2024</span>
+        <p class="src-note">Supports: the definition of compound interest.</p></div></li>
+      <li id="S2"><span class="src-id">S2</span><div>
+        <a class="src-title" href="#">Placeholder: Rule of 72 explainer</a>
+        <span class="src-meta"><span class="src-type paper">Paper</span>Journal · 2019</span>
+        <p class="src-note">Supports: doubling-time figures.</p></div></li>
+      <li id="S3"><span class="src-id">S3</span><div>
+        <a class="src-title" href="#">Placeholder: historical returns dataset</a>
+        <span class="src-meta"><span class="src-type data">Data</span>Institution · 2025</span>
+        <p class="src-note">Supports: long-run average return assumptions.</p></div></li>
+      <li id="S4"><span class="src-id">S4</span><div>
+        <a class="src-title" href="#">Placeholder: inflation statistics</a>
+        <span class="src-meta"><span class="src-type data">Data</span>Statistics office · 2026</span>
+        <p class="src-note">Supports: typical inflation range.</p></div></li>
+      <li id="S5"><span class="src-id">S5</span><div>
+        <a class="src-title" href="#">Placeholder: fund fee comparison</a>
+        <span class="src-meta"><span class="src-type video">Video</span>Channel · 2023</span>
+        <p class="src-note">Supports: fee ranges.</p></div></li>
+      <li id="S6"><span class="src-id">S6</span><div>
+        <a class="src-title" href="#">Placeholder: worst market years discussion</a>
+        <span class="src-meta"><span class="src-type forum">Forum</span>Community · 2022</span>
+        <p class="src-note">Supports: drawdown example. Community view, not peer-reviewed.</p></div></li>
+    </ol>
+  </div>
+</section>
+
+<footer class="footer"><div class="wrap">
+  <!-- EDIT: narration credit + disclaimers -->
+  Narration: placeholder TTS voice. Charts are illustrative. Not financial advice. · <a href="../">All briefings</a>
+</div></footer>
+</main>
+
+<!-- ============ AUDIO PLAYER ============ -->
+<!-- Put audio.mp3 next to this index.html. The <audio> inside is the no-JS fallback. -->
+<div class="player" data-audio="audio.mp3" data-title="Compounding, explained" data-artist="Deep Dive" data-album="Deep Dive briefings">
+  <audio controls preload="metadata" src="audio.mp3"><a href="audio.mp3">Download the narration (MP3)</a></audio>
+</div>
+
+<!-- Kit scripts (same loader as in <head>). -->
+<script>['svg', 'chart', 'steps', 'audio'].forEach(function (f) { document.write('<script src="' + KIT + f + '.js"><\/script>'); });</script>
+
+<!-- ============ TOPIC-SPECIFIC JS (optional, ~50–100 lines) ============ -->
+<script>
+(function () {
+  var S = Kit.svg, host = document.getElementById('snowball');
+  var W = 520, H = 340, YEARS = 6, P = 1000, rate = 0.25;
+  var svg = S.create(host, { viewBox: '0 0 ' + W + ' ' + H, label: 'Stacked bars: principal, simple interest, and interest on interest growing each year' });
+  var COLORS = { base: 'var(--sky)', simple: 'var(--mint)', compound: 'var(--violet)' };
+
+  function draw(animate) {
+    while (svg.lastChild && svg.lastChild.nodeName !== 'title') svg.removeChild(svg.lastChild);
+    var max = P * Math.pow(1 + rate, YEARS), left = 10, base = H - 34, top = 78;
+    var bw = (W - left - 10) / YEARS * 0.6, gap = (W - left - 10) / YEARS;
+    var scale = function (v) { return v / max * (base - top); };
+    var bars = [], arrows = [];
+
+    for (var y = 1; y <= YEARS; y++) {
+      var total = P * Math.pow(1 + rate, y), simple = P * rate * y, compound = total - P - simple;
+      var x = left + (y - 1) * gap, g = S.group(svg), h = 0;
+      [[P, COLORS.base], [simple, COLORS.simple], [compound, COLORS.compound]].forEach(function (part) {
+        var ph = scale(part[0]);
+        if (ph > 0.5) S.rect(g, x, base - h - ph, bw, ph, { fill: part[1], rx: 4 });
+        h += ph;
+      });
+      S.text(svg, x + bw / 2, base + 24, 'Year ' + y, { anchor: 'middle', 'font-size': 15 });
+      S.text(svg, x + bw / 2, base - h - 10, '€' + Math.round(total).toLocaleString('en'), { anchor: 'middle', 'font-weight': 700, 'font-size': 15 });
+      bars.push(g);
+      if (y < YEARS) arrows.push(S.arrow(svg, x + bw + 4, base - h + 6, x + gap - 4, base - scale(P * Math.pow(1 + rate, y + 1)) + 6, { color: 'var(--sun)', strokeWidth: 2.5, bend: -14 }));
+    }
+    // Legend
+    [['Starting €1,000', COLORS.base], ['Simple interest', COLORS.simple], ['Interest on interest', COLORS.compound]].forEach(function (l, i) {
+      S.rect(svg, left, 4 + i * 22, 16, 16, { fill: l[1], rx: 4 });
+      S.text(svg, left + 24, 17 + i * 22, l[0], { 'font-size': 15 });
+    });
+    if (animate) { S.pop(bars, { stagger: 110 }); S.draw(arrows, { delay: 300, stagger: 110 }); }
+  }
+
+  draw(false);
+  // Hook into the step engine: replay the build every time this step becomes active.
+  Kit.steps.on('snowball', function () { draw(true); });
+
+  document.querySelectorAll('[data-rate]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      rate = +b.getAttribute('data-rate');
+      document.querySelectorAll('[data-rate]').forEach(function (o) { o.setAttribute('aria-pressed', o === b); });
+      draw(true);
+    });
+  });
+
+  // Any custom code can also listen to step changes (detail: index, id, el, prev, direction).
+  // Here: expose the active step as <body data-active-step="…"> for CSS hooks.
+  document.addEventListener('kit:step', function (e) { document.body.setAttribute('data-active-step', e.detail.id); });
+})();
+</script>
+</body>
+</html>
