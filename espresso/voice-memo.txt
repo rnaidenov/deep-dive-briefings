@@ -1,0 +1,13 @@
+Rado, here's the ninety-second version of espresso.
+
+One. Extraction is measurable. Extraction yield equals the drink's strength times its weight, divided by the dose. Eighteen grams in, thirty-six out, at ten per cent strength, is twenty per cent.
+
+Two. Pressure only exists because the puck resists. Flow equals pressure divided by resistance. Grind coarse, or let a channel open, and the pressure sags. Nine bar is a convention with a reason behind it: flow tends to peak there.
+
+Three. The enemy is uneven flow. Cameron and colleagues found that finer grinding helps only down to a critical size. Past that, yield drops and shots get erratic. So go for the finest grind that still flows evenly.
+
+For the Gaggia: flush and preheat. If it's stock, use a consistent temperature routine. Stir the grounds with a needle at full depth, tamp level, and weigh both the dose and the output. Start at one to two, and adjust the grind by taste.
+
+GaggiMate adds PID temperature control and brew by weight. The Pro version also adds pressure and flow profiles. Installing it means rewiring at mains voltage, so treat that seriously.
+
+Everything's sourced on the page, with a profile chart and a dial-in walkthrough.

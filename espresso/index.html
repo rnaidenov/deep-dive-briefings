@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="data:,">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#13204a">
+<!-- EDIT: page title + description -->
+<title>Espresso, from the puck up · Deep Dive</title>
+<meta name="description" content="Espresso workflow and machine behaviour: extraction, flushing, temperature, pressure and flow, GaggiMate, puck prep and dialling in. Sourced, with interactives and audio.">
+<script>
+  /* Kit loader. Topic pages live at /<slug>/, so the kit is "../_kit/".
+     The one exception is this template previewed in place at /_kit/template/, where the kit is "../".
+     Leave this block as-is when copying the template. */
+  var KIT = /\/_kit\/template\/(index\.html)?$/.test(location.pathname) ? '../' : '../_kit/';
+  document.documentElement.classList.add('js');
+  document.write('<link rel="stylesheet" href="' + KIT + 'kit.css">');
+  // Failsafe: if the kit scripts didn't load, drop the hidden-until-revealed states.
+  addEventListener('load', function () { if (!(window.Kit && Kit.steps)) document.documentElement.classList.remove('js'); });
+</script>
+<noscript><link rel="stylesheet" href="../_kit/kit.css"></noscript>
+<style>
+  :root { --accent: var(--coral); }
+  html:not(.js) .jsonly{display:none!important} .js .nojs{display:none!important}
+  .checklist{list-style:none;padding:0}.checklist li{margin:8px 0;padding:10px 12px;border-radius:12px;background:var(--paper-2,#f6f3ee)}
+  .checklist input{width:20px;height:20px;vertical-align:-4px;margin-right:6px;accent-color:var(--mint)}
+  .checklist li.done{opacity:.6}.checklist li.done b{text-decoration:line-through}
+  .js .dial li{display:none}.js .dial li.on{display:list-item}.dial li{margin:8px 0}
+  .dialnav{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.dialnav button{font:inherit;padding:8px 14px;border-radius:999px;border:2px solid var(--accent);background:transparent;cursor:pointer;color:inherit}
+  .dialnav button:disabled{opacity:.4;cursor:default}
+</style>
+</head>
+<body data-step-nav>
+<header class="hero">
+  <div class="wrap">
+    <a class="back" href="../">← All briefings</a><br>
+    <span class="kicker">Coffee · 21 Oct 2026</span>
+    <h1>Espresso, <em class="accent">from the puck up.</em></h1>
+    <p class="lede">What the machine is really doing to the water, and how flushing, temperature, preinfusion, puck prep and a GaggiMate upgrade fit into a repeatable workflow. Written for a home Gaggia Classic Pro and a Timemore C3 Pro.</p>
+    <div class="meta"><span>⏱ 15 min read</span><span>🎧 ~11 min audio</span><a href="#sources">26 sources</a></div>
+  </div>
+  <svg class="hero-art" viewBox="0 0 200 200" aria-hidden="true">
+    <circle cx="100" cy="100" r="92" fill="#1e2d63"/>
+    <rect x="62" y="58" width="76" height="22" rx="6" fill="#ffc23d"/>
+    <rect x="70" y="80" width="60" height="26" rx="4" fill="#ff6b57"/>
+    <path data-draw d="M92 106 C 92 124, 96 132, 96 146" stroke="#c98a4b" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <path data-draw d="M108 106 C 108 124, 104 132, 104 146" stroke="#c98a4b" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <path d="M70 146 h60 v12 a14 14 0 0 1 -14 14 h-32 a14 14 0 0 1 -14 -14z" fill="#f4efe6"/>
+    <circle class="bob" cx="150" cy="56" r="8" fill="#1fc8a0"/>
+  </svg>
+</header>
+
+<main>
+
+<section data-step="tldr">
+  <div class="wrap">
+    <span class="kicker">The short version</span>
+    <h2>Three things worth knowing</h2>
+    <ol class="points">
+      <li><span class="pill fact">Fact</span><b>Extraction can be put in numbers.</b> Extraction yield is the dissolved coffee divided by the dry dose, which works out as <b>EY = TDS × beverage mass ÷ dose</b>. 18 g in, 36 g out at 10% TDS gives 20%. <a class="cite" href="#S1">S1</a> <a class="cite" href="#S7">S7</a></li>
+      <li><span class="pill fact">Fact</span><b>Pressure needs resistance.</b> Flow = pressure drop ÷ resistance. The puck only "sees" 9 bar if it resists; a coarse or channelled puck lets the pressure sag. <a class="cite" href="#S2">S2</a> <a class="cite" href="#S3">S3</a></li>
+      <li><span class="pill est">Evidence + opinion</span><b>Uneven flow is the main enemy.</b> Cameron et al. found that grinding finer raised yield only down to a critical size; below it, yield fell and shots varied more. Flushing, temperature routines, preinfusion and puck prep are all ways to make the water's path more even and repeatable. <a class="cite" href="#S1">S1</a> <a class="cite" href="#S12">S12</a></li>
+    </ol>
+    <p class="muted">Labels: <span class="pill fact">Fact</span> measured or documented · <span class="pill est">Estimate</span> model, range or single-setup result · <span class="pill op">Opinion</span> a named person's view. Rado's grinder is covered in <a href="../grinder/">the grinder briefing</a>.</p>
+  </div>
+</section>
+
+<section data-step="principles" data-step-tap>
+  <div class="wrap">
+    <span class="kicker">First principles</span>
+    <h2>What extraction actually is</h2>
+    <p>Tap, press <b>→</b> or scroll to build it up.</p>
+    <div class="card ill" data-reveal="next">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="#fff1d1"/><g fill="#8a5a3c"><circle cx="35" cy="40" r="7"/><circle cx="55" cy="35" r="5"/><circle cx="62" cy="55" r="8"/><circle cx="40" cy="62" r="6"/></g></svg>
+      <div><h3>1 · A bed of porous particles</h3>Ground coffee is a packed bed. Hot water flows through and dissolves the soluble part. Finer particles expose more surface. <a class="cite" href="#S1">S1</a></div>
+    </div>
+    <div class="card ill" data-reveal="next">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="#ffe1dc"/><path d="M30 25v50M50 25v50M70 25v50" stroke="#ff6b57" stroke-width="6" stroke-linecap="round"/></svg>
+      <div><h3>2 · Even flow vs. channels</h3><span class="pill est">Model + experiment</span> If flow were perfectly even, finer would always extract more. In practice yield peaked and then fell at fine settings, with more shot-to-shot variation, which points to uneven flow. <a class="cite" href="#S1">S1</a></div>
+    </div>
+    <div class="card ill" data-reveal="next">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="#d4f6ec"/><path d="M25 70 L50 30 L75 70z" fill="#1fc8a0"/></svg>
+      <div><h3>3 · Steer by mass, not time</h3><span class="pill op">Authors' recommendation</span> Use the finest grind that still flows evenly, then steer with the mass of coffee and the mass of water rather than the shot time. Caveat: one café, reduced pump pressure, automated tamp at 98 N. <a class="cite" href="#S1">S1</a></div>
+    </div>
+    <div class="math" data-reveal="next">EY = (TDS × beverage mass) ÷ dose</div>
+  </div>
+</section>
+
+<section data-step="maths">
+  <div class="wrap">
+    <span class="kicker">Worked example</span>
+    <h2>The numbers in one shot</h2>
+    <div class="callout example"><span class="callout-title">Example</span>
+      <b>Dose</b> 18 g · <b>Yield</b> 36 g · <b>Time</b> 30 s · <b>TDS</b> 10%<br>
+      Ratio = 36 ÷ 18 = <b>1 : 2</b><br>
+      Average output flow = 36 g ÷ 30 s = <b>1.2 g/s</b> (about 1.2 ml/s, taking espresso as roughly the density of water)<br>
+      EY = 10% × 36 ÷ 18 = <b>20%</b>, so a fifth of the dry coffee's mass is in the cup. <a class="cite" href="#S7">S7</a></div>
+    <div class="callout"><span class="callout-title">Pressure and resistance</span>At a fixed pressure, <b>doubling the resistance halves the flow</b> (flow = ΔP ÷ R). With a fixed flow, doubling the resistance doubles the pressure drop. <a class="cite" href="#S2">S2</a> Coffee ad Astra models the puck so that pressure scales with the <i>square</i> of the resistance change: a puck twice as resistant needs about 4× the pressure for the same flow. That is why pure flow profiles can spike. <a class="cite" href="#S9">S9</a></div>
+    <div class="callout tip"><span class="callout-title">Ratio vs. strength</span><span class="pill op">Hoffmann</span> More water extracts more but dilutes. He starts around 1:2–1:2.2 and uses 2–3 g output changes for small corrections. Typical bands: ristretto 1:1–1:1.5, espresso 1:1.5–1:2.5, lungo 1:2.5–1:3+. <a class="cite" href="#S13">S13</a></div>
+    <details><summary>Optional practice problem</summary>
+      <p>You dose 20 g and stop at 45 g. The refractometer reads 8.5% TDS. What are the ratio and the EY? Did you extract more or less than the 18 g → 36 g @ 10% example?</p>
+      <p><b>Answer:</b> ratio 45 ÷ 20 = 1 : 2.25. EY = 8.5 × 45 ÷ 20 = <b>19.1%</b>, slightly less than 20%, even though the drink is longer, because it is weaker.</p>
+    </details>
+  </div>
+</section>
+
+<section data-step="flush">
+  <div class="wrap">
+    <span class="kicker">Machine behaviour</span>
+    <h2>Why flushing matters</h2>
+    <div class="grid">
+      <div class="card sun" data-reveal="pop"><div class="stat">~100 ml</div><p>Classic Pro E24 boiler, listed as 3.5 oz (lead-free brass, 1370 W, fully embedded heater). <a class="cite" href="#S21">S21</a></p></div>
+      <div class="card coral" data-reveal="pop"><div class="stat">150 ml</div><p>Gaggia: run about 150 cc through the group with the portafilter in, then wait a few minutes before the first coffee. <a class="cite" href="#S22">S22</a></p></div>
+      <div class="card mint" data-reveal="pop"><div class="stat">2 weeks</div><p>After more than two weeks unused, Gaggia says to run a whole tank through. <a class="cite" href="#S22">S22</a></p></div>
+    </div>
+    <ul>
+      <li><span class="pill fact">Fact</span> Gaggia lists the causes of "coffee too cold" as: machine not heated, cold cups, portafilter not preheated (first coffee). <a class="cite" href="#S22">S22</a></li>
+      <li><span class="pill fact">Fact</span> The manual says to rinse the tank and use fresh drinking water, to wash the filters daily and to brush grounds off the shower screen regularly. <a class="cite" href="#S22">S22</a></li>
+      <li><span class="pill est">Inference</span> So a flush does three jobs: it heats the group and portafilter metal, replaces water that has sat in the path, and rinses grounds off the screen.</li>
+      <li><span class="pill what">Not covered</span> Thermoblock machines heat water on demand and behave differently. No source on them was opened for this briefing, so no claims are made.</li>
+    </ul>
+  </div>
+</section>
+
+<section data-step="temp">
+  <div class="wrap">
+    <span class="kicker">Machine behaviour</span>
+    <h2>Temperature stability</h2>
+    <div class="grid">
+      <div class="card" data-reveal><h3>Thermostat</h3><p>Switches the element fully on or off, so the boiler swings around its set point. That is why people "temperature surf": brew at the same point in the swing each time. <a class="cite" href="#S23">S23</a></p></div>
+      <div class="card" data-reveal><h3>PID</h3><p>A controller that measures continuously and adjusts heater power. Coffeeblog: on a PID machine you "more or less just press the shot button". <a class="cite" href="#S23">S23</a> GaggiMate replaces the brew thermostat with a thermocouple plus PID. <a class="cite" href="#S18">S18</a></p></div>
+      <div class="card" data-reveal><h3>Thermal mass</h3><p>Gaggia says the E24's brass boiler "improves both thermal stability and steaming performance". <a class="cite" href="#S21">S21</a></p></div>
+    </div>
+    <div class="callout"><span class="callout-title">A surfing routine</span><span class="pill op">Coffeeblog</span> Flush until the light goes off. When it comes back on, wait ~10 s, tap steam for 3–6 s (UK 3–4 s, 110 V ~5 s), wait 3–4 s, then brew. "If it ain't broke don't fix it." <a class="cite" href="#S23">S23</a></div>
+    <div class="callout warn"><span class="callout-title">Machines differ</span><span class="pill op">Forum anecdote</span> A 2013 Home-Barista thread found that routines don't transfer: one owner needed about 13 s of steam to reach ~202 °F; another fitted a microcontroller instead. <a class="cite" href="#S24">S24</a></div>
+    <p><span class="pill fact">Fact</span> GaggiMate's suggested settings for the Classic Pro include a <b>temperature offset of 8</b>. This raises the boiler-wall set point "to account for thermal loss of the water leaving the grouphead". <a class="cite" href="#S16">S16</a></p>
+  </div>
+</section>
+
+<section data-step="pressure">
+  <div class="wrap">
+    <span class="kicker">Water flow and pressure</span>
+    <h2>Why 9 bar, and what profiling changes</h2>
+    <ul>
+      <li><span class="pill op">Hoffmann</span> The most plausible origin of 9 bar: at a fixed dose and grind, flow rises with pressure up to about 9 bar, then falls as the pressure compacts the puck. He calls 9 bar desirable but "hard mode" (his phrase, paraphrased from the transcript) and suggests lower pressure as an easier mode for weaker grinders or prep. <a class="cite" href="#S12">S12</a></li>
+      <li><span class="pill fact">Fact</span> Barista Hustle puts the flow plateau at around <b>5–7 bar in the puck</b>, depending on grinder, machine and technique (citing Corrochano et al. 2015). <a class="cite" href="#S5">S5</a></li>
+      <li><span class="pill fact">Fact</span> Classic Pro E24: 15 bar Ulka pump, OPV calibrated to <b>9 bar</b>. Gaggia's spec table lists "pre-brewing: manual". <a class="cite" href="#S21">S21</a> <a class="cite" href="#S25">S25</a></li>
+      <li><span class="pill fact">Fact</span> <b>Preinfusion</b> wets the puck first: it removes dry spots, can reduce shot-to-shot variation and makes the puck more permeable, so you can grind finer. Full saturation can take 8–10 s or more. <a class="cite" href="#S4">S4</a></li>
+      <li><span class="pill fact">Fact</span> <b>Pressure profiling</b> follows a pressure target, so flow speeds up as the puck erodes. <b>Flow profiling</b> caps the flow, so pressure declines instead. <a class="cite" href="#S11">S11</a> <a class="cite" href="#S6">S6</a></li>
+      <li><span class="pill op">Decent</span> Flat to slightly rising flow (e.g. 1.0 → 2.0 ml/s) tastes best; declining flow is "flat, muted". Its best profiles use flow during preinfusion, then pressure, then an adaptive flow limit. <a class="cite" href="#S11">S11</a></li>
+      <li><span class="pill op">Hoffmann</span> Big pressure swings make espresso "different… but rarely better". The big wins are full saturation and preventing channels. <a class="cite" href="#S12">S12</a></li>
+    </ul>
+    <div class="card">
+      <span class="pill what">What-if · toy model, not a simulation of your machine</span>
+      <h3>Pressure profile vs. flow profile</h3>
+      <div id="profile" class="jsonly"></div>
+      <div class="nojs callout"><span class="callout-title">Chart needs JavaScript</span>In words: after preinfusion, a <b>fixed-pressure</b> shot's flow rises as the puck loses resistance, while a <b>fixed-flow</b> shot's pressure falls instead.</div>
+      <p class="caption">Model: resistance R falls linearly over the shot by the chosen percentage. Pressure mode: P fixed, flow = P ÷ R. Flow mode: flow fixed, P = flow × R, capped at 12 bar. Preinfusion is a linear ramp. Units are arbitrary but scaled to bar and ml/s. Based on flow = ΔP ÷ R. <a class="cite" href="#S2">S2</a></p>
+    </div>
+  </div>
+</section>
+
+<section data-step="gaggimate" class="band">
+  <div class="wrap">
+    <span class="kicker">The upgrade</span>
+    <h2>What to expect from GaggiMate</h2>
+    <p class="lede">An open-source controller with a touchscreen. It replaces the stock thermostat control on a Gaggia (and some other single-boiler machines). <a class="cite" href="#S19">S19</a></p>
+    <div class="grid">
+      <div class="card dark" data-reveal><h3>Fits (official kits)</h3><p>Gaggia Classic (1992–2014); Classic Pro, Evo and E24 (2019+); Rancilio Silvia V1–V6. Other machines through community guides or compatibility requests. <a class="cite" href="#S20">S20</a> <a class="cite" href="#S17">S17</a></p></div>
+      <div class="card dark" data-reveal><h3>Standard and Pro</h3><p>Touch UI, PID, simple profiles, brew-by-weight with Bluetooth scales, grind-by-weight (Tasmota), HomeKit, Home Assistant, web UI, OTA updates, hot water. <a class="cite" href="#S15">S15</a></p></div>
+      <div class="card dark" data-reveal><h3>Pro only</h3><p>Profiles with pressure or flow control, exit conditions, phase transitions, full shot graphs, smooth "Pro Steam". The Pro kit adds a 0–1.6 MPa pressure transducer and plumbing. <a class="cite" href="#S15">S15</a> <a class="cite" href="#S17">S17</a></p></div>
+    </div>
+    <div class="callout warn" data-reveal><span class="callout-title">Limitations, as stated by the project</span>
+      <ul>
+        <li>Standard: shot diagrams show <b>only weight and temperature</b>. Steam assist works, but "won't be as smooth as on Pro". <a class="cite" href="#S15">S15</a></li>
+        <li>Installing it means rewiring <b>mains-voltage</b> connections. The guide says: "Exercise extreme caution… consult a professional technician", and to follow local electrical codes. <a class="cite" href="#S18">S18</a></li>
+        <li>Housings are "required for mounting and electrical safety". <a class="cite" href="#S20">S20</a></li>
+        <li>The PID values are starting points per machine and are tunable. <a class="cite" href="#S16">S16</a></li>
+        <li>Licence: CC BY-NC-SA 4.0. <a class="cite" href="#S19">S19</a></li>
+      </ul></div>
+    <p><span class="pill est">Not verified here</span> How closely a Classic Pro's vibratory pump can actually follow a pressure or flow target once modded was not measured in any source I opened.</p>
+  </div>
+</section>
+
+<section data-step="puck">
+  <div class="wrap">
+    <span class="kicker">Puck prep</span>
+    <h2>Checklist</h2>
+    <p class="muted">Tick each step as you go. Your ticks stay on this device only. With JS off it is a plain list.</p>
+    <ul class="checklist" id="checklist">
+      <li><label><input type="checkbox"> <b>Dose by weight, within the basket's range.</b> Gaggia lists 7–18 g filter capacity. <a class="cite" href="#S21">S21</a></label></li>
+      <li><label><input type="checkbox"> <b>Dry, preheated portafilter.</b> Remove any residual water before filling. <a class="cite" href="#S22">S22</a></label></li>
+      <li><label><input type="checkbox"> <b>WDT at full depth.</b> With surface-only WDT, peak puck resistance varied by ~40% shot to shot, so the author kept deep WDT. <a class="cite" href="#S8">S8</a></label></li>
+      <li><label><input type="checkbox"> <b>Tamp level; force matters little.</b> Across tamp pressures, Cameron et al. saw no appreciable change in shot time or EY. <a class="cite" href="#S1">S1</a></label></li>
+      <li><label><input type="checkbox"> <b>Optional puck screen.</b> Mesh screen: +0.3–0.5% EY (statistically significant, 10 shots per method) and a cleaner shower screen. <a class="cite" href="#S14">S14</a></label></li>
+      <li><label><input type="checkbox"> <b>Optional bottom paper.</b> Cut resistance ~43% in one test. <a class="cite" href="#S10">S10</a> Helps standard baskets more than precision ones. <a class="cite" href="#S14">S14</a></label></li>
+      <li><label><input type="checkbox"> <b>Lock in and brew promptly</b> at your routine's temperature point. <a class="cite" href="#S23">S23</a></label></li>
+    </ul>
+    <p id="ckout" class="muted jsonly" aria-live="polite"></p>
+  </div>
+</section>
+
+<section data-step="dialin">
+  <div class="wrap">
+    <span class="kicker">Workflow</span>
+    <h2>Dial-in, one step at a time</h2>
+    <ol class="dial" id="dial">
+      <li><b>Fix the dose.</b> Pick one basket and one dose (e.g. 18 g) and keep it. <span class="pill op">Hoffmann: change dose or grind for big moves.</span> <a class="cite" href="#S13">S13</a></li>
+      <li><b>Fix the ratio.</b> Start near 1:2 (18 → 36 g), weighing the output rather than judging volume. <a class="cite" href="#S13">S13</a></li>
+      <li><b>Grind to taste, not to a clock.</b> A common guide is ~25–30 s including preinfusion. <a class="cite" href="#S23">S23</a> Cameron et al. suggest ignoring time and steering by masses. <a class="cite" href="#S1">S1</a> On the C3 Pro, see the <a href="../grinder/">grinder briefing</a>.</li>
+      <li><b>Taste and steer.</b> Sour, thin or harsh → extract more: grind finer, or go 2–3 g longer. Hoffmann describes going from 36 to 39 g taking a shot from slightly harsh and sour to balanced (paraphrased). Bitter, dry or hollow → extract less. <a class="cite" href="#S13">S13</a></li>
+      <li><b>Watch for channels.</b> If grinding finer makes shots erratic, you may be past the critical grind; step back coarser. <a class="cite" href="#S1">S1</a></li>
+      <li><b>Change one variable at a time</b> and write it down: dose, out, time, taste.</li>
+    </ol>
+    <div class="dialnav jsonly"><button type="button" id="dprev">← Back</button> <span id="dpos"></span> <button type="button" id="dnext">Next step →</button></div>
+  </div>
+</section>
+
+<section data-step="rest">
+  <div class="wrap">
+    <span class="kicker">The rest of the workflow</span>
+    <h2>Water and cleaning</h2>
+    <ul>
+      <li><span class="pill fact">Fact</span> SCA 2018 water recommendation: total hardness <b>50–175 ppm</b> and alkalinity <b>40–75 ppm</b> as CaCO₃, pH 6–8. Alkalinity below 40 raises the risk of corrosion. Espresso tolerates up to ~150 ppm alkalinity before buffering shows. (Coffearium's summary of the SCA handbook.) <a class="cite" href="#S26">S26</a></li>
+      <li><span class="pill fact">Fact</span> Gaggia recommends purified or bottled water and its own descaler only, "never… vinegar". The manual says to descale every 2–3 months in one place and <b>every 2 months</b> in another. <a class="cite" href="#S22">S22</a></li>
+      <li><span class="pill fact">Fact</span> Daily: wash the filters; if a malfunction appears, soak them in boiling water for 10 minutes. Regularly: brush the shower screen. <a class="cite" href="#S22">S22</a></li>
+      <li><span class="pill what">Not verified</span> Detergent backflushing with a blind basket is widely recommended by retailers, but it is not in the Gaggia manual I opened. Follow your machine's own documentation.</li>
+    </ul>
+  </div>
+</section>
+
+<section data-step="think">
+  <div class="wrap">
+    <span class="kicker">Before you change anything</span>
+    <h2>Two questions to sit with</h2>
+    <ol class="points">
+      <li>If pressure only exists because the puck resists, what is the pressure gauge actually telling you about <i>your</i> puck, and what can't it tell you?</li>
+      <li>If "the finest grind that still flows evenly" is the target, how would you find that point on the C3 Pro using only a scale and your taste?</li>
+    </ol>
+  </div>
+</section>
+
+<section data-step="path" id="learn">
+  <div class="wrap">
+    <span class="kicker">Go deeper</span>
+    <h2>Learning path</h2>
+    <p class="muted">In order: watch, then read, then the paper.</p>
+    <ol class="path">
+      <li class="path-step" data-level="start" data-n="1"><div class="path-card"><div class="path-meta"><span>Start here</span><span>Video</span></div>
+        <h3><a href="https://www.youtube.com/watch?v=F4wrUP4c5P4">James Hoffmann: Understanding Espresso – Ratio</a></h3><p>Why weight beats volume, and how to steer with output.</p></div></li>
+      <li class="path-step" data-level="start" data-n="2"><div class="path-card"><div class="path-meta"><span>Next</span><span>Video</span></div>
+        <h3><a href="https://www.youtube.com/watch?v=po3oGIicu-8">James Hoffmann: Understanding Espresso – Pressure</a></h3><p>9 bar, preinfusion styles, flow.</p></div></li>
+      <li class="path-step" data-level="next" data-n="3"><div class="path-card"><div class="path-meta"><span>Next</span><span>Video</span></div>
+        <h3><a href="https://www.youtube.com/watch?v=BzIBNhnd85c">Lance Hedrick: Are puck screens worth it?</a></h3><p>A data-driven take on puck prep add-ons.</p></div></li>
+      <li class="path-step" data-level="next" data-n="4"><div class="path-card"><div class="path-meta"><span>Read</span><span>Lesson</span></div>
+        <h3><a href="https://www.baristahustle.com/lesson/6-02-understanding-pressure-at-the-puck/">Barista Hustle: Understanding pressure at the puck</a></h3><p>Flow = ΔP ÷ R, explained well.</p></div></li>
+      <li class="path-step" data-level="deep" data-n="5"><div class="path-card"><div class="path-meta"><span>Deep</span><span>Docs</span></div>
+        <h3><a href="https://docs.gaggimate.eu/">GaggiMate docs</a> + <a href="https://decentespresso.com/docs/pressure_vs_flow_profiling_and_how_to_convert_into_an_advanced_shot">Decent: pressure vs flow</a></h3><p>Read these before buying or building anything.</p></div></li>
+      <li class="path-step" data-level="expert" data-n="6"><div class="path-card"><div class="path-meta"><span>Expert</span><span>Paper</span></div>
+        <h3><a href="https://doi.org/10.1016/j.matt.2019.12.019">Cameron et al. 2020, Matter</a></h3><p>The model and experiments behind "finest even grind".</p></div></li>
+    </ol>
+  </div>
+</section>
+
+<section data-step="sources" id="sources" class="sources">
+  <div class="wrap">
+    <span class="kicker">Receipts</span>
+    <h2>Sources</h2>
+    <ol class="source-list">
+      <li id="S1"><span class="src-id">S1</span><div>
+        <a class="src-title" href="https://doi.org/10.1016/j.matt.2019.12.019">Cameron, Morisco, … Hendon, Foster (2020). Systematically Improving Espresso. Matter 2(3)</a>
+        <span class="src-meta"><span class="src-type paper">Paper</span>Elsevier/Cell · 2020</span>
+        <p class="src-note">Supports: Critical grind size, uneven flow, tamp-force result, EY definition. Direct full-text fetch failed (403/timeout); read via the search-index extract.</p></div></li>
+      <li id="S2"><span class="src-id">S2</span><div>
+        <a class="src-title" href="https://www.baristahustle.com/lesson/6-02-understanding-pressure-at-the-puck/">Barista Hustle: Æ 6.02 Understanding Pressure at the Puck</a>
+        <span class="src-meta"><span class="src-type">Web</span>Barista Hustle</span>
+        <p class="src-note">Supports: Flow = pressure drop ÷ resistance. Lesson body is behind a login and was read via the search-index extract.</p></div></li>
+      <li id="S3"><span class="src-id">S3</span><div>
+        <a class="src-title" href="https://www.baristahustle.com/app-pressure-flow/">Barista Hustle: Pressure & Flow app</a>
+        <span class="src-meta"><span class="src-type">Web</span>Barista Hustle</span>
+        <p class="src-note">Supports: No pressure without resistance; restrictor; profiling types.</p></div></li>
+      <li id="S4"><span class="src-id">S4</span><div>
+        <a class="src-title" href="https://www.baristahustle.com/lesson/ae-6-07-preinfusion/">Barista Hustle: Æ 6.07 Preinfusion</a>
+        <span class="src-meta"><span class="src-type">Web</span>Barista Hustle</span>
+        <p class="src-note">Supports: Preinfusion benefits; 8–10 s+. Read via the search-index extract.</p></div></li>
+      <li id="S5"><span class="src-id">S5</span><div>
+        <a class="src-title" href="https://www.baristahustle.com/lesson/ae-6-06-pressure-flow-and-solubility/">Barista Hustle: Æ 6.06 Pressure, Flow, and Solubility</a>
+        <span class="src-meta"><span class="src-type">Web</span>Barista Hustle</span>
+        <p class="src-note">Supports: Flow plateau at ~5–7 bar in the puck.</p></div></li>
+      <li id="S6"><span class="src-id">S6</span><div>
+        <a class="src-title" href="https://www.baristahustle.com/lesson/ae-7-08-flow-profiling/">Barista Hustle: Æ 7.08 Flow Profiling</a>
+        <span class="src-meta"><span class="src-type">Web</span>Barista Hustle</span>
+        <p class="src-note">Supports: Flow vs restriction profiling.</p></div></li>
+      <li id="S7"><span class="src-id">S7</span><div>
+        <a class="src-title" href="https://www.baristahustle.com/lesson/acm-2-06-coffee-algebra/">Barista Hustle: ACM 2.06 Coffee Algebra</a>
+        <span class="src-meta"><span class="src-type">Web</span>Barista Hustle</span>
+        <p class="src-note">Supports: TDS × beverage = EY × dose; 18/36/10% → 20%. Members-only; seen only in the search-index extract.</p></div></li>
+      <li id="S8"><span class="src-id">S8</span><div>
+        <a class="src-title" href="https://coffeeadastra.com/2021/01/16/a-study-of-espresso-puck-resistance-and-how-puck-preparation-affects-it/">Coffee ad Astra: A Study of Espresso Puck Resistance and How Puck Preparation Affects it</a>
+        <span class="src-meta"><span class="src-type">Web</span>J. Gagné · 2021</span>
+        <p class="src-note">Supports: Surface vs deep WDT; ~40% peak-resistance variation.</p></div></li>
+      <li id="S9"><span class="src-id">S9</span><div>
+        <a class="src-title" href="https://coffeeadastra.com/2020/12/31/an-espresso-profile-that-adapts-to-your-grind-size/">Coffee ad Astra: An Espresso Profile that Adapts to your Grind Size</a>
+        <span class="src-meta"><span class="src-type">Web</span>J. Gagné · 2020</span>
+        <p class="src-note">Supports: Pressure reacts to the square of the resistance change in flow mode.</p></div></li>
+      <li id="S10"><span class="src-id">S10</span><div>
+        <a class="src-title" href="https://coffeeadastra.com/2021/04/04/how-a-paper-filter-below-an-espresso-puck-affects-hydraulic-resistance/">Coffee ad Astra: How a Paper Filter Below an Espresso Puck Affects Hydraulic Resistance</a>
+        <span class="src-meta"><span class="src-type">Web</span>J. Gagné · 2021</span>
+        <p class="src-note">Supports: Bottom paper cut resistance by 43 ± 4%.</p></div></li>
+      <li id="S11"><span class="src-id">S11</span><div>
+        <a class="src-title" href="https://decentespresso.com/docs/pressure_vs_flow_profiling_and_how_to_convert_into_an_advanced_shot">Decent Espresso docs: Pressure vs. flow profiling</a>
+        <span class="src-meta"><span class="src-type">Web</span>Decent Espresso</span>
+        <p class="src-note">Supports: Puck erosion behaviour; flavour opinion; adaptive profiles.</p></div></li>
+      <li id="S12"><span class="src-id">S12</span><div>
+        <a class="src-title" href="https://www.youtube.com/watch?v=po3oGIicu-8">James Hoffmann: Understanding Espresso – Pressure (Episode #6)</a>
+        <span class="src-meta"><span class="src-type video">Video</span>YouTube</span>
+        <p class="src-note">Supports: Why 9 bar; preinfusion styles; pressure opinions.</p></div></li>
+      <li id="S13"><span class="src-id">S13</span><div>
+        <a class="src-title" href="https://www.youtube.com/watch?v=F4wrUP4c5P4">James Hoffmann: Understanding Espresso – Ratio (Episode #2)</a>
+        <span class="src-meta"><span class="src-type video">Video</span>YouTube</span>
+        <p class="src-note">Supports: Ratio bands, 1:2–1:2.2 start, 2–3 g tweaks. Transcript read in Chinese translation.</p></div></li>
+      <li id="S14"><span class="src-id">S14</span><div>
+        <a class="src-title" href="https://www.youtube.com/watch?v=BzIBNhnd85c">Lance Hedrick: Are puck screens worth it?</a>
+        <span class="src-meta"><span class="src-type video">Video</span>YouTube</span>
+        <p class="src-note">Supports: +0.3–0.5% EY with mesh screens; bottom-paper findings.</p></div></li>
+      <li id="S15"><span class="src-id">S15</span><div>
+        <a class="src-title" href="https://docs.gaggimate.eu/">GaggiMate docs: feature list and comparison</a>
+        <span class="src-meta"><span class="src-type">Web</span>GaggiMate</span>
+        <p class="src-note">Supports: Standard vs Pro features and footnoted limitations; v1.7.3 stable.</p></div></li>
+      <li id="S16"><span class="src-id">S16</span><div>
+        <a class="src-title" href="https://docs.gaggimate.eu/docs/usage-configuration/">GaggiMate docs: Configuration</a>
+        <span class="src-meta"><span class="src-type">Web</span>GaggiMate</span>
+        <p class="src-note">Supports: PID starting values; temperature offset 8.</p></div></li>
+      <li id="S17"><span class="src-id">S17</span><div>
+        <a class="src-title" href="https://docs.gaggimate.eu/docs/sourcing-kit/">GaggiMate docs: Kit Build</a>
+        <span class="src-meta"><span class="src-type">Web</span>GaggiMate</span>
+        <p class="src-note">Supports: Kit contents; the Pro adds a pressure transducer.</p></div></li>
+      <li id="S18"><span class="src-id">S18</span><div>
+        <a class="src-title" href="https://docs.gaggimate.eu/docs/installation-gcp/">GaggiMate docs: Gaggia Classic Pro/Evo installation</a>
+        <span class="src-meta"><span class="src-type">Web</span>GaggiMate</span>
+        <p class="src-note">Supports: High-voltage safety notes; thermostat replaced with a thermocouple.</p></div></li>
+      <li id="S19"><span class="src-id">S19</span><div>
+        <a class="src-title" href="https://github.com/jniebuhr/gaggimate">GaggiMate on GitHub (jniebuhr/gaggimate)</a>
+        <span class="src-meta"><span class="src-type">Web</span>GitHub</span>
+        <p class="src-note">Supports: Project description, safety shutoff, CC BY-NC-SA 4.0.</p></div></li>
+      <li id="S20"><span class="src-id">S20</span><div>
+        <a class="src-title" href="https://shop.gaggimate.eu/collections/kit-configurator">GaggiMate shop: kit configurator</a>
+        <span class="src-meta"><span class="src-type">Web</span>GaggiMate shop</span>
+        <p class="src-note">Supports: Supported machines; housings required for safety.</p></div></li>
+      <li id="S21"><span class="src-id">S21</span><div>
+        <a class="src-title" href="https://www.gaggia-na.com/products/gaggia-classic-pro">Gaggia North America: Classic Pro E24</a>
+        <span class="src-meta"><span class="src-type">Web</span>Gaggia</span>
+        <p class="src-note">Supports: Boiler 3.5 oz, 1370 W; 15 bar Ulka; OPV 9 bar; 7–18 g baskets.</p></div></li>
+      <li id="S22"><span class="src-id">S22</span><div>
+        <a class="src-title" href="https://www.gaggia.com/app/uploads/2023/07/4219-465-10461-MANUAL-GAG.-CLASSIC-USA-Rev-00_New_Classic_Evo.pdf">Gaggia Classic Pro user manual (US, PDF)</a>
+        <span class="src-meta"><span class="src-type data">Data</span>Gaggia · 2022</span>
+        <p class="src-note">Supports: Preheating, cleaning, descaling, water.</p></div></li>
+      <li id="S23"><span class="src-id">S23</span><div>
+        <a class="src-title" href="https://coffeeblog.co.uk/temperature-surf-gaggia-classic/">Coffeeblog: How to Temperature Surf the Gaggia Classic</a>
+        <span class="src-meta"><span class="src-type">Web</span>Coffeeblog · 2024</span>
+        <p class="src-note">Supports: Surfing routine; PID comparison.</p></div></li>
+      <li id="S24"><span class="src-id">S24</span><div>
+        <a class="src-title" href="https://www.home-barista.com/espresso-machines/gaggia-temperature-surfing-are-all-gaggia-classics-same-t27457.html">Home-Barista: Gaggia temperature surfing, are all Classics the same?</a>
+        <span class="src-meta"><span class="src-type forum">Forum</span>Home-Barista · 2013</span>
+        <p class="src-note">Supports: Owner anecdotes; community view, not measured.</p></div></li>
+      <li id="S25"><span class="src-id">S25</span><div>
+        <a class="src-title" href="https://www.gaggiadirect.com/uploads/2/5/0/9/25099443/schedatechaclassicevo-20-2-23.pdf">Gaggia: Classic Evo technical sheet (PDF)</a>
+        <span class="src-meta"><span class="src-type data">Data</span>Gaggia · 2023</span>
+        <p class="src-note">Supports: Pump nominal 15 bar; pre-brewing: Manual.</p></div></li>
+      <li id="S26"><span class="src-id">S26</span><div>
+        <a class="src-title" href="https://coffearium.org/entries/water-for-coffee/">Coffearium: Water for coffee (summary of the SCA Water Quality Handbook)</a>
+        <span class="src-meta"><span class="src-type">Web</span>Coffearium</span>
+        <p class="src-note">Supports: SCA hardness/alkalinity/pH targets. Secondary source.</p></div></li>
+    </ol>
+  </div>
+</section>
+
+<footer class="footer"><div class="wrap">
+  Narration: Microsoft Edge neural TTS (en-GB-RyanNeural). The profile chart is a toy model. Electrical modifications carry real risk; follow the manufacturer's and the project's safety guidance. · <a href="../">All briefings</a>
+</div></footer>
+</main>
+
+<div class="player" data-audio="audio.mp3" data-title="Espresso, from the puck up" data-artist="Deep Dive" data-album="Deep Dive briefings">
+  <audio controls preload="metadata" src="audio.mp3"><a href="audio.mp3">Download the narration (MP3)</a></audio>
+</div>
+<script>['svg', 'chart', 'steps', 'audio'].forEach(function (f) { document.write('<script src="' + KIT + f + '.js"><\/script>'); });</script>
+<script>
+(function () {
+  // What-if: pressure profile vs flow profile (toy model, flow = P / R).
+  var el = document.getElementById('profile');
+  if (el && window.Kit && Kit.chart) {
+    var T = 40;
+    function frac(t, p) { return t <= p.pi ? 0 : (t - p.pi) / (T - p.pi); }
+    function R(t, p) { return (p.P / p.Q) * (1 - p.d / 100 * frac(t, p)); }
+    function ramp(t, p) { return p.pi > 0 && t < p.pi ? t / p.pi : 1; }
+    Kit.chart(el, {
+      title: 'Toy model: pressure and flow over a 40 second shot under a fixed-pressure or fixed-flow strategy',
+      x: { min: 0, max: T, label: 'Seconds', format: 'int' },
+      y: { min: 0, max: 12, label: 'bar  /  ml/s', format: 'dec' },
+      area: false,
+      sliders: [
+        { name: 'P', label: 'Target pressure', min: 6, max: 10, step: 0.5, value: 9, format: '{v} bar' },
+        { name: 'Q', label: 'Target flow', min: 1, max: 3, step: 0.1, value: 2, format: '{v} ml/s' },
+        { name: 'd', label: 'Puck resistance lost by end', min: 0, max: 60, step: 5, value: 40, format: '{v}%' },
+        { name: 'pi', label: 'Preinfusion ramp', min: 0, max: 12, step: 1, value: 6, format: '{v} s' }
+      ],
+      series: [
+        { label: 'Pressure mode: pressure', color: 'var(--coral)', fn: function (t, p) { return p.P * ramp(t, p); } },
+        { label: 'Pressure mode: flow', color: 'var(--coral)', dash: true, fn: function (t, p) { return p.P * ramp(t, p) / R(t, p); } },
+        { label: 'Flow mode: pressure', color: 'var(--sky)', fn: function (t, p) { return t < p.pi ? p.P * ramp(t, p) : Math.min(12, p.Q * R(t, p)); } },
+        { label: 'Flow mode: flow', color: 'var(--sky)', dash: true, fn: function (t, p) { return t < p.pi ? p.P * ramp(t, p) / R(0, p) : p.Q; } }
+      ],
+      readout: function (p) {
+        var endFlow = p.P / R(T, p), endP = p.Q * R(T, p);
+        return 'At 40 s, pressure mode flows <b>' + endFlow.toFixed(1) + ' ml/s</b> (from ' + p.Q.toFixed(1) + '); flow mode has eased to <b>' + endP.toFixed(1) + ' bar</b> (from ' + p.P + ').';
+      }
+    });
+  }
+
+  // Puck-prep checklist with local persistence.
+  var boxes = [].slice.call(document.querySelectorAll('#checklist input')), out = document.getElementById('ckout');
+  var saved = []; try { saved = JSON.parse(localStorage.getItem('esp-check') || '[]'); } catch (e) {}
+  function sync() {
+    var n = 0;
+    boxes.forEach(function (b, i) { b.closest('li').classList.toggle('done', b.checked); if (b.checked) n++; });
+    if (out) out.innerHTML = n === boxes.length ? '<b>All ' + n + ' done: pull the shot.</b> <button type="button" id="ckreset">Reset</button>' : n + ' of ' + boxes.length + ' done';
+    var r = document.getElementById('ckreset'); if (r) r.onclick = function () { boxes.forEach(function (b) { b.checked = false; }); save(); };
+  }
+  function save() { try { localStorage.setItem('esp-check', JSON.stringify(boxes.map(function (b) { return b.checked; }))); } catch (e) {} sync(); }
+  boxes.forEach(function (b, i) { b.checked = !!saved[i]; b.addEventListener('change', save); });
+  sync();
+
+  // Dial-in step-through.
+  var items = [].slice.call(document.querySelectorAll('#dial li')), k = 0;
+  var prev = document.getElementById('dprev'), next = document.getElementById('dnext'), pos = document.getElementById('dpos');
+  function show() {
+    items.forEach(function (li, i) { li.classList.toggle('on', i <= k); });
+    pos.textContent = 'Step ' + (k + 1) + ' of ' + items.length;
+    prev.disabled = k === 0; next.disabled = k === items.length - 1;
+  }
+  if (items.length && prev) {
+    prev.onclick = function () { if (k > 0) { k--; show(); } };
+    next.onclick = function () { if (k < items.length - 1) { k++; show(); } };
+    show();
+  }
+})();
+</script>
+</body>
+</html>
