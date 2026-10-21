@@ -1,0 +1,17 @@
+{
+  "principal": {
+    "en": "The money you start with, before any interest is added.",
+    "bg": "главница"
+  },
+  "interest on interest": {
+    "en": "Interest earned on interest from earlier years. This is what makes the curve bend upward.",
+    "bg": "лихва върху лихвата"
+  },
+  "index fund": {
+    "en": "A fund that simply buys every stock in a market index, so it is cheap to run.",
+    "bg": "индексен фонд"
+  },
+  "expense ratio": {
+    "bg": "годишна такса за управление"
+  }
+}

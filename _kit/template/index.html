@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#13204a">
+<!-- Favicon: inline SVG, so it needs no path. EDIT: swap the fill colours to match the accent if you like. -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2313204a'/%3E%3Ccircle cx='27' cy='36' r='15' fill='%23ffc23d'/%3E%3Ccircle cx='45' cy='20' r='8' fill='%23ff6b57'/%3E%3C/svg%3E">
 <!-- EDIT: page title + description -->
 <title>Compounding, explained · Deep Dive</title>
 <meta name="description" content="Template briefing: how compound growth works, with an interactive chart, a diagram, audio and sources.">
@@ -23,7 +25,8 @@
   :root { --accent: var(--sun); }
 </style>
 </head>
-<body data-step-nav>
+<!-- data-glossary: optional terms file for <dfn class="term"> (see glossary.js). Copy glossary.json too, or drop the attribute. -->
+<body data-step-nav data-glossary="glossary.json">
 
 <!-- ============ HERO ============ -->
 <header class="hero">
@@ -54,7 +57,7 @@
     <span class="kicker">The short version</span>
     <h2>Four things worth knowing</h2>
     <ol class="points">
-      <li><span class="pill fact">Fact</span>Compounding means your returns earn returns. Growth is a <b>percentage of a growing base</b>. <a class="cite" href="#S1">S1</a></li>
+      <li><span class="pill fact">Fact</span><dfn class="term" data-en="Earning returns on your past returns, not just on the money you put in." data-bg="сложна лихва">Compounding</dfn> means your returns earn returns. Growth is a <b>percentage of a growing base</b>. <a class="cite" href="#S1">S1</a></li>
       <li><span class="pill fact">Fact</span>At 7% a year, money doubles in about <b>10 years</b>; at 10%, in about 7. <a class="cite" href="#S2">S2</a></li>
       <li><span class="pill est">Estimate</span>Over 30 years, most of the final balance tends to be growth, not deposits. Try it in the chart below.</li>
       <li><span class="pill op">Opinion</span>Time in the market usually matters more than picking the perfect rate.</li>
@@ -71,7 +74,7 @@
 
     <div class="card ill" data-reveal="next">
       <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="#dde9ff"/><circle cx="50" cy="50" r="20" fill="#3d8bff"/></svg>
-      <div><h3>1 · You start with a pile</h3>Call it <i>P</i>. This year it earns a rate <i>r</i>, so it grows to <i>P</i>(1 + <i>r</i>). <a class="cite" href="#S1">S1</a></div>
+      <div><h3>1 · You start with a pile</h3>Call it <i>P</i>, the <dfn class="term">principal</dfn>. This year it earns a rate <i>r</i>, so it grows to <i>P</i>(1 + <i>r</i>). <a class="cite" href="#S1">S1</a></div>
     </div>
     <div class="card ill" data-reveal="next">
       <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="#d4f6ec"/><circle cx="44" cy="54" r="20" fill="#3d8bff"/><circle cx="70" cy="34" r="9" fill="#1fc8a0"/></svg>
@@ -94,6 +97,18 @@
       <span class="pill what">What-if · not advice</span>
       <!-- Preset chart: everything comes from Kit.chart.presets.compound -->
       <div data-chart="compound" data-currency="€"></div>
+      <!-- No-JS fallback: .no-js is hidden once JS runs (html.js). Keep the numbers in sync with the chart defaults. -->
+      <div class="no-js table-wrap">
+        <table>
+          <caption class="caption">€10,000 start, €200 a month, 7% a year</caption>
+          <thead><tr><th>Years</th><th>Put in</th><th>Balance</th></tr></thead>
+          <tbody>
+            <tr><td>10</td><td>€34,000</td><td>€54,700</td></tr>
+            <tr><td>20</td><td>€58,000</td><td>€144,600</td></tr>
+            <tr class="hl"><td>30</td><td>€82,000</td><td>€325,200</td></tr>
+          </tbody>
+        </table>
+      </div>
       <p class="caption">Monthly compounding, constant return, no fees or inflation. Real returns vary year to year. <a class="cite" href="#S3">S3</a></p>
     </div>
 
@@ -103,6 +118,7 @@
       <div data-chart data-fn="log(2) / log(1 + x / 100)" data-x="1,15" data-y="0,auto"
            data-x-label="Yearly return (%)" data-y-label="Years to double" data-y-format="dec"
            data-label="Exact doubling time" data-aspect="0.5" data-title="Doubling time by return"></div>
+      <p class="no-js caption">Exact doubling time: 2% → 35 yrs, 4% → 17.7, 6% → 11.9, 8% → 9.0, 10% → 7.3, 12% → 6.1.</p>
       <p class="caption">72 ÷ rate is a good mental shortcut: at 8% it gives 9 years; the exact answer is 9.0. <a class="cite" href="#S2">S2</a></p>
     </div>
   </div>
@@ -113,7 +129,7 @@
   <div class="wrap">
     <span class="kicker">Diagram</span>
     <h2>The snowball, year by year</h2>
-    <p class="lede">Each bar is the balance at the end of a year. Watch the violet slice, interest on interest, take over.</p>
+    <p class="lede">Each bar is the balance at the end of a year. Watch the violet slice, <dfn class="term">interest on interest</dfn>, take over.</p>
     <figure>
       <div id="snowball"></div>
       <figcaption>€1,000 at 25% a year; the rate is exaggerated so the layers are easy to see. Custom diagram built with <code>Kit.svg</code>.</figcaption>
@@ -133,7 +149,8 @@
     <h2>What the formula leaves out</h2>
     <div class="grid">
       <div class="card coral" data-reveal="pop"><div class="stat">2–3%</div><p>Typical yearly inflation eats into real growth. <a class="cite" href="#S4">S4</a></p></div>
-      <div class="card mint" data-reveal="pop"><div class="stat" style="color:var(--mint-d)">0.2%</div><p>A low index-fund fee, versus 1–2% for many active funds. <a class="cite" href="#S5">S5</a></p></div>
+      <div class="card mint" data-reveal="pop"><div class="stat" style="color:var(--mint-d)">0.2%</div><p>A low <dfn class="term">index fund</dfn> fee, versus 1–2% for many active funds. <a class="cite" href="#S5">S5</a></p>
+        <p class="caption" style="text-align:right">The yearly fee is called the <dfn class="term" data-en="The share of your money a fund takes each year to cover its costs.">expense ratio</dfn></p></div>
       <div class="card sky" data-reveal="pop"><div class="stat" style="color:var(--sky-d)">−34%</div><p>A single bad year can happen. Averages hide the path. <a class="cite" href="#S6">S6</a></p></div>
     </div>
     <div class="callout key" data-reveal><span class="callout-title">Key idea</span>Compounding rewards <b>time</b> more than anything else you control.</div>
@@ -225,7 +242,7 @@
 </div>
 
 <!-- Kit scripts (same loader as in <head>). -->
-<script>['svg', 'chart', 'steps', 'audio'].forEach(function (f) { document.write('<script src="' + KIT + f + '.js"><\/script>'); });</script>
+<script>['svg', 'chart', 'steps', 'audio', 'glossary'].forEach(function (f) { document.write('<script src="' + KIT + f + '.js"><\/script>'); });</script>
 
 <!-- ============ TOPIC-SPECIFIC JS (optional, ~50–100 lines) ============ -->
 <script>

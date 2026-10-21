@@ -55,6 +55,10 @@ section,.section{padding:48px 0}
 .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 .center{text-align:center}
 
+/* JS helpers: html.js is set by the loader / steps.js when JS runs */
+html:not(.js) .js-only{display:none!important}
+.js .no-js{display:none!important}
+
 /* Kicker: small uppercase label above headings */
 .kicker{display:inline-block;letter-spacing:.14em;text-transform:uppercase;font-size:.74rem;font-weight:700;color:var(--violet-d);margin-bottom:.3em}
 .lede{font-size:1.15rem;color:var(--muted);max-width:40ch}
@@ -152,6 +156,7 @@ ol.points>li:nth-child(5n+5)::before{background:var(--violet);color:#fff}
 table{border-collapse:collapse;width:100%;font-size:.9rem;background:var(--paper)}
 th,td{padding:10px 12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
 th{background:var(--navy);color:#fff;font-weight:700}
+caption{text-align:left;margin:0 0 8px}
 tr.hl td{background:var(--sun-t)}
 
 /* ---------- Forms / sliders ---------- */
@@ -259,6 +264,25 @@ a.cite:hover{background:var(--violet);color:#fff}
 .src-type.video{background:var(--coral-t);color:var(--coral-d)}
 .src-type.forum{background:var(--violet-t);color:var(--violet-d)}
 
+/* ---------- Glossary (glossary.js) ---------- */
+dfn.term{font-style:inherit}
+dfn.term.is-ready{cursor:help;text-decoration:underline dotted;text-decoration-color:color-mix(in srgb,currentColor 45%,transparent);text-decoration-thickness:1.5px;text-underline-offset:3px;border-radius:4px;transition:background-color .15s,text-decoration-color .15s}
+dfn.term.is-ready:hover,dfn.term.is-open{text-decoration-color:currentColor;background:color-mix(in srgb,var(--accent) 22%,transparent)}
+.gl-tip{--tb:var(--navy-900);--tt:var(--on-dark);--tm:var(--on-dark-muted);--tk:var(--accent);position:fixed;z-index:40;top:0;left:0;width:max-content;max-width:min(320px,calc(100vw - 16px));padding:10px 14px 11px;border-radius:var(--r-sm);background:var(--tb);color:var(--tt);font:400 .88rem/1.45 var(--sans);text-align:left;box-shadow:var(--shadow-lg);overflow-wrap:break-word;animation:kit-tip .16s var(--ease) both}
+.gl-tip[hidden]{display:none}
+.gl-tip.on-dark{--tb:var(--paper);--tt:var(--ink);--tm:var(--muted);--tk:var(--violet-d)}
+.gl-tip>span{display:block}
+.gl-tip>span[hidden]{display:none}
+.gl-term{font:700 .95rem/1.25 var(--serif);color:var(--tk);margin-bottom:2px}
+.gl-bg{margin-top:6px;color:var(--tm)}
+.gl-lang{display:inline-block;font:700 .62rem/1.5 var(--sans);letter-spacing:.07em;padding:0 6px;margin-right:6px;border-radius:var(--r-pill);background:color-mix(in srgb,var(--tt) 14%,transparent);color:var(--tt);vertical-align:1px}
+.gl-bg-text{color:var(--tt);font-weight:700}
+.gl-tip>.gl-arrow{position:absolute;left:var(--ax,50%);width:12px;height:12px;margin-left:-6px;background:var(--tb);transform:rotate(45deg);border-radius:2px}
+.gl-tip[data-side=above]>.gl-arrow{bottom:-5px}
+.gl-tip[data-side=below]>.gl-arrow{top:-5px}
+@keyframes kit-tip{from{opacity:0;transform:translateY(var(--ty,4px))}to{opacity:1;transform:none}}
+.gl-tip[data-side=below]{--ty:-4px}
+
 /* ---------- Audio player (audio.js) ---------- */
 body.has-player{padding-bottom:calc(var(--player-h,96px) + 28px)}
 .player{position:fixed;left:10px;right:10px;bottom:10px;z-index:25;max-width:var(--measure);margin:0 auto;background:color-mix(in srgb,var(--navy-900) 94%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:var(--on-dark);border-radius:20px;padding:10px 14px 10px 10px;box-shadow:0 14px 40px -10px rgba(0,0,0,.5)}
@@ -307,11 +331,12 @@ body.has-player{padding-bottom:calc(var(--player-h,96px) + 28px)}
   html{scroll-behavior:auto}
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;transition-delay:0s!important}
   .js [data-step],.js [data-reveal]{opacity:1;transform:none}
+  .gl-tip{animation:none}
 }
 
 /* ---------- Print ---------- */
 @media print{
-  .player,.step-nav,.step-progress,.step-more{display:none!important}
+  .player,.step-nav,.step-progress,.step-more,.gl-tip{display:none!important}
   .js [data-step],.js [data-reveal]{opacity:1!important;transform:none!important;display:revert!important}
   .hero{background:none;color:var(--ink)}.hero h1{color:var(--ink)}
 }
