@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#13204a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2313204a'/%3E%3Ccircle cx='32' cy='32' r='9' fill='%23ffc23d'/%3E%3Ccircle cx='14' cy='18' r='6' fill='%23ff6b57'/%3E%3Ccircle cx='50' cy='20' r='6' fill='%231fc8a0'/%3E%3Ccircle cx='46' cy='49' r='6' fill='%233d8bff'/%3E%3C/svg%3E">
+<title>Mind map demo: Moby-Dick · Deep Dive kit</title>
+<meta name="description" content="Kit demo: an interactive radial mind map of Moby-Dick (story arc, characters, themes, key ideas, quotes).">
+<script>
+  /* Kit loader (same as the template). Kit demo pages live at /_kit/<demo>/, so the kit is "../";
+     a copy of this page in a topic folder (/<slug>/) gets "../_kit/". */
+  var KIT = /\/_kit\/(template|mindmap)\/(index\.html)?$/.test(location.pathname) ? '../' : '../_kit/';
+  document.documentElement.classList.add('js');
+  document.write('<link rel="stylesheet" href="' + KIT + 'kit.css">');
+  // Failsafe: if the kit scripts didn't load, show the no-JS outline instead.
+  addEventListener('load', function () { if (!(window.Kit && Kit.mindmap)) document.documentElement.classList.remove('js'); });
+</script>
+<!-- Both paths: one resolves here (/_kit/mindmap/), the other in a topic folder; the miss is harmless. -->
+<noscript><link rel="stylesheet" href="../kit.css"><link rel="stylesheet" href="../_kit/kit.css"></noscript>
+<style>
+  :root { --accent: var(--mint); }
+  .outline ul { padding-left: 1.2em; margin: .2em 0 .5em; }
+  .outline li { margin: .15em 0; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <a class="back" href="../../">← All briefings</a><br>
+    <span class="kicker">Kit demo · mindmap.js</span>
+    <h1>Moby-Dick, <em class="accent">mapped.</em></h1>
+    <p class="lede">Book notes as a mind map that unfolds one tap at a time: the story, the crew, the big themes, and the lines worth remembering.</p>
+    <div class="meta"><span>29 nodes</span><span>10 cross-links</span><span>Public domain, 1851</span></div>
+  </div>
+</header>
+
+<main>
+<section>
+  <div class="wrap wide">
+    <span class="kicker">Interactive</span>
+    <h2>Tap the book to start</h2>
+    <p class="muted js-only">Each tap opens a branch and shows its note. Tap again to fold it. Dashed lines link ideas across branches. On a keyboard, Tab into the map, then use the arrow keys, Enter and Esc.</p>
+
+    <div data-mindmap="demo.json" data-label="Moby-Dick mind map">
+      <!-- No-JS fallback (also shown if demo.json fails to load). Keep in sync with demo.json. -->
+      <div class="no-js card outline">
+        <h3>Moby-Dick (Herman Melville, 1851)</h3>
+        <ul>
+          <li><b>Story arc</b>
+            <ul>
+              <li>Ishmael goes to sea (Ch. 1)</li>
+              <li>A bed shared with Queequeg (Ch. 3)</li>
+              <li>Ahab's oath on the quarter-deck (Ch. 36)</li>
+              <li>The three-day chase (Ch. 133–135)</li>
+              <li>Ishmael alone survives, on Queequeg's coffin (Epilogue)</li>
+            </ul></li>
+          <li><b>Characters</b>: Ishmael (narrator), Captain Ahab, Queequeg, Starbuck (first mate), Moby Dick</li>
+          <li><b>Themes</b>: obsession, fate vs free will, the limits of knowledge, friendship across cultures</li>
+          <li><b>Key ideas</b>: the cetology chapters (Ch. 32), one coin and many readings (Ch. 99), the whiteness of the whale (Ch. 42)</li>
+          <li><b>Places</b>: the <i>Pequod</i>, New Bedford and Nantucket</li>
+          <li><b>Quotes</b>
+            <ul>
+              <li>“Call me Ishmael.” (Ch. 1)</li>
+              <li>“All visible objects, man, are but as pasteboard masks.” (Ch. 36)</li>
+              <li>“To the last I grapple with thee…” (Ch. 135)</li>
+            </ul></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <span class="kicker">How it's built</span>
+    <h2>One line of markup</h2>
+    <div class="callout tip"><span class="callout-title">Use it in a topic</span>
+      Add <code>'mindmap'</code> to the loader's script list, put your map in <code>&lt;slug&gt;/mindmap.json</code>, and add
+      <code>&lt;div data-mindmap="mindmap.json"&gt;</code> with a <code>.no-js</code> outline inside. The data format is in <code>_kit/README.md</code>.</div>
+  </div>
+</section>
+
+<footer class="footer"><div class="wrap">
+  Notes on <i>Moby-Dick; or, The Whale</i> (1851), public domain. · <a href="../../">All briefings</a>
+</div></footer>
+</main>
+
+<!-- Kit scripts (same loader as in <head>). -->
+<script>['glossary', 'mindmap'].forEach(function (f) { document.write('<script src="' + KIT + f + '.js"><\/script>'); });</script>
+</body>
+</html>

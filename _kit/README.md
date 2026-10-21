@@ -10,8 +10,10 @@ _kit/
   svg.js         SVG diagram helpers: Kit.svg.create/line/rect/circle/text/arrow/path/group/draw/pop
   audio.js       sticky audio player + lock-screen MediaSession controls: <div data-audio>
   glossary.js    inline term popups (English explainer + Bulgarian): <dfn class="term">, optional glossary.json
+  mindmap.js     interactive radial mind map for book notes: <div data-mindmap="mindmap.json">
   fonts/         Inter 400/700, Fraunces 700 + 400 italic (woff2, self-hosted)
   template/      complete example page (also a live preview at /_kit/template/) + example glossary.json
+  mindmap/       mind map demo page (live at /_kit/mindmap/) + demo.json (Moby-Dick)
 ```
 
 ## New topic in 6 steps
@@ -53,6 +55,8 @@ Other options I rejected:
 
 If you'd rather use plain tags in a topic page, replace the loader with `<link rel="stylesheet" href="../_kit/kit.css">` and `<script src="../_kit/{svg,chart,steps,audio,glossary}.js">`, keeping that order. Also keep `document.documentElement.classList.add('js')`.
 
+The mind map demo at `/_kit/mindmap/` uses the same loader, with the test widened to `/_kit/(template|mindmap)/`, and has two `<noscript>` stylesheets (`../kit.css` and `../_kit/kit.css`; whichever one doesn't resolve is ignored).
+
 The `<noscript>` stylesheet uses `../_kit/kit.css`, which is right for topic pages. In the template preview at `/_kit/template/` it doesn't resolve, so no-JS styling only shows on real topic pages.
 
 **Favicon.** The template has an inline SVG favicon as a `data:` URI (`<link rel="icon" href="data:image/svg+xml,…">`), so it needs no file and no path. To recolour it, edit the `fill='%23rrggbb'` values (`%23` is `#`).
@@ -77,6 +81,7 @@ The `<noscript>` stylesheet uses `../_kit/kit.css`, which is right for topic pag
 | Glossary term | `<dfn class="term" data-en="Plain explainer" data-bg="превод">word</dfn>`; `data-term="key"` if the text differs |
 | Glossary file | `<body data-glossary="glossary.json">` |
 | Only with JS / only without | `class="js-only"` / `class="no-js"` |
+| Mind map (book notes) | `<div data-mindmap="mindmap.json">` + a `.no-js` outline inside; add `'mindmap'` to the loader's script list |
 
 ## Glossary (glossary.js)
 
@@ -105,7 +110,68 @@ Mark jargon inline. The term gets a faint dotted underline, and a small popup sh
 
 **Accessibility.** Each enhanced term gets `tabindex="0"`, `role="button"` and `aria-expanded`. While open, it also gets `aria-describedby` pointing to the popup. The popup is a single shared `role="tooltip"` element with a unique id, and the translation is marked `lang="bg"`. Without JS, the `<dfn>` is just ordinary text.
 
-API: `Kit.glossary.refresh()` (enhance terms added later), `.open(el)`, `.close()`, `.data`.
+API: `Kit.glossary.scan(root)` (enhance terms inside `root`, for content rendered later, e.g. the mind map's note panel), `.init(root)` (the same, and also runs the one-time setup if it hasn't run yet), `.refresh()` (scan the whole page), `.open(el)`, `.close()`, `.isOpen()`, `.data`. Popups sit at `z-index: 40`, above the mind-map bottom sheet (35), the player (25) and the step nav (20).
+
+## Mind map (mindmap.js)
+
+An interactive radial mind map for book notes: story arc, characters, themes, key ideas, places, quotes. The demo is at `/_kit/mindmap/` and uses `_kit/mindmap/demo.json` (*Moby-Dick*).
+
+**Use it in a topic.** Add `'mindmap'` to the loader's script list (`['svg', 'chart', 'steps', 'audio', 'glossary', 'mindmap']`), put the data in `<slug>/mindmap.json`, and add:
+
+```html
+<div data-mindmap="mindmap.json" data-label="Moby-Dick mind map">
+  <div class="no-js card">…a static nested <ul> outline of the same map…</div>
+</div>
+```
+
+Or from JS: `var map = Kit.mindmap(el, 'mindmap.json')` (or pass the data object instead of a URL). The JSON path is relative to the page. Height: `--kmap-h` (default `clamp(440px, 72vh, 680px)`), e.g. `style="--kmap-h:520px"`.
+
+**Data format.**
+
+```json
+{
+  "root": "book",
+  "nodes": [
+    { "id": "book", "label": "Moby-Dick", "type": "book", "note": "<p>Herman Melville, 1851.</p>" },
+    { "id": "ahab", "label": "Captain Ahab", "type": "character", "chapter": "Chapter 36 · The Quarter-Deck",
+      "note": "<p>HTML is allowed, including <dfn class=\"term\" data-en=\"…\" data-bg=\"…\">terms</dfn>.</p>",
+      "quote": "optional; shown as a blockquote" }
+  ],
+  "edges": [
+    { "from": "book", "to": "ahab" },
+    { "from": "ahab", "to": "whale", "label": "hunts" }
+  ]
+}
+```
+
+- `id` and `label` are required. `note`, `quote`, `chapter` and `color` are optional. A numeric `chapter` (or a string of digits) is shown as "Chapter N"; any other string is shown as written.
+- `type` sets the colour: `character` coral, `theme` sun, `event`/`plot` mint, `idea`/`key-point` sky, `place` violet, `quote` pink, `chapter` navy, `book` (the root) solid navy. Any other type is grey, and its name is shown in the pill. `color` (`coral`, `sun`, `mint`, `sky`, `violet`, `pink`) overrides the type colour.
+- The tree is a breadth-first walk of the edges (`from` → `to`) starting at `root`. If `root` is missing, the first node with no incoming edge is used. Children keep the order of their edges. Every other edge is a **cross-link**: a faint dashed curve, with its `label`, drawn only while both ends are visible. Nodes the walk can't reach are attached through reverse edges or, failing that, to the root, with a console warning.
+- `note` and `quote` are inserted as HTML, so only use trusted content (your own JSON).
+
+**Behaviour.**
+- At first only the root is shown. Tapping a node unfolds its children outward from it (260 ms, ease-out, no overshoot) and opens its note. Tapping it again folds the branch back, along with everything below it. Tapping a leaf just opens its note.
+- Layout: a radial tree. The root's children are spread around the full circle, and each deeper level fans out within its parent's slice. Slices are weighted by how many leaves each branch has. Positions are fixed for the whole tree, so unfolding never moves nodes that are already visible. Crowded outer rings alternate between two radii.
+- The camera pans smoothly to keep newly opened nodes in view beside the note panel. It only zooms out if it has to, and never below 0.6×; the tapped node always stays in view.
+- Drag to pan. Pinch to zoom on touch; scroll-wheel or trackpad pinch on desktop (0.3× to 2.5×). The −, +, Fit and Expand all / Collapse all buttons are 44px tall. A drag that starts on a node doesn't tap it.
+- Note panel: on the right inside the map at ≥ 760px, and a bottom sheet (fixed, max 48vh) on narrower screens. On narrow screens the page scrolls so the map sits above the sheet. The panel shows the type pill, label, chapter, note, quote, and a list of connections (parent, cross-links, children). The list is phrased relative to the node ("hunts **Moby Dick**", "**Starbuck** pleads with"). Clicking a connection unfolds the path to that node, selects it and focuses it. The panel closes with × or Esc. Glossary terms in notes get popups, which sit above the panel.
+- `prefers-reduced-motion`: no node, camera or panel animation; changes are instant.
+- If the JSON fails to load, the map shows an error and the `.no-js` fallback inside the element becomes visible. Print shows the fallback instead of the map.
+
+**Accessibility.** The nodes are `<button role="treeitem">` inside `role="tree"`, with `aria-level`, `aria-setsize`/`aria-posinset`, `aria-expanded` (on nodes with children) and `aria-selected` (the node whose note is open). Hidden nodes are `hidden`. The tree uses a roving tabindex, so Tab enters it once, at the last focused node. Each node's accessible name includes its type ("Ishmael, Character").
+
+| Key (focus on a node) | Action |
+|---|---|
+| ↓ / ↑ | Next / previous visible node (a child comes first if the node is open, otherwise the sibling) |
+| → | Open the node if needed, then move to its first child |
+| ← | Parent |
+| Home / End | Root / last visible node |
+| Enter / Space | Open or close the branch, and show the note |
+| Esc | Close an open glossary popup first, then the note; focus returns to the node |
+
+While the note is open, it follows the arrow-key focus. A polite live region announces "Characters expanded, 5 items" or "… collapsed", and the tree is described by a short visually hidden help text. Arrow keys inside the map don't change steps (`steps.js` respects `preventDefault`), and taps inside it don't advance a `data-step-tap` step.
+
+**API.** `Kit.mindmap(el, urlOrData)` returns `map`. `map.ready` (a Promise), `.expand(id)`, `.collapse(id)`, `.toggle(id)`, `.select(id)` (unfold the path and open the note), `.close()`, `.fit()`, `.expandAll()`, `.collapseAll()`, `.nodes` (by id). It fires `kit:mindmap` on the element with `{action: 'expand'|'collapse'|'select'|'close', id, node}`.
 
 ## No-JS fallbacks
 

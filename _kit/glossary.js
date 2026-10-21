@@ -14,7 +14,9 @@
    tapping/clicking outside closes it; Esc closes it and returns focus to the term. One popup at a time.
    Terms with no explainer and no translation are left as plain text.
 
-   API: Kit.glossary.refresh() (enhance terms added later), .open(el), .close(), .data (merged JSON) */
+   API: Kit.glossary.scan(root) (enhance terms inside root, e.g. content rendered later; .init(root) is the same
+        and also runs the one-time setup if needed), .refresh() (scan the whole page), .open(el), .close(),
+        .isOpen(), .data (merged JSON) */
 (function () {
   'use strict';
   var Kit = window.Kit = window.Kit || {};
@@ -90,8 +92,9 @@
     parts.en.hidden = !en;
     parts.bgText.textContent = bg;
     parts.bg.hidden = !bg;
-    // Light popup over dark sections, dark popup elsewhere.
-    tip.classList.toggle('on-dark', !!el.closest('.band,.hero,.card.dark,.player'));
+    // Light popup over dark sections, dark popup elsewhere (light panels such as .kmap-panel reset it).
+    var ctx = el.closest('.band,.hero,.card.dark,.player,.kmap-panel');
+    tip.classList.toggle('on-dark', !!ctx && !ctx.classList.contains('kmap-panel'));
     tip.hidden = false;
     place();
     el.setAttribute('aria-expanded', 'true');
@@ -146,12 +149,17 @@
     });
   }
 
-  function refresh() {
-    doc.querySelectorAll('dfn.term').forEach(function (el) { fill(el); enhance(el); });
+  function scan(root) {
+    root = root || doc;
+    var list = [].slice.call(root.querySelectorAll('dfn.term'));
+    if (root.matches && root.matches('dfn.term')) list.unshift(root);
+    list.forEach(function (el) { fill(el); enhance(el); });
   }
+  function refresh() { scan(doc); }
 
   var inited = false;
-  function init() {
+  function init(root) {
+    if (root && root.nodeType === 1) scan(root);  // ignore the DOMContentLoaded Event argument
     if (inited) return;
     inited = true;
     refresh();
@@ -173,7 +181,10 @@
     addEventListener('resize', schedule);
   }
 
-  Kit.glossary = { init: init, refresh: refresh, open: function (el) { open(el, 'click'); }, close: function () { close(); }, data: data };
+  Kit.glossary = {
+    init: init, scan: scan, refresh: refresh, data: data,
+    open: function (el) { open(el, 'click'); }, close: function () { close(); }, isOpen: function () { return !!current; }
+  };
 
   if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', init);
   else init();

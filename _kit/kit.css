@@ -283,6 +283,72 @@ dfn.term.is-ready:hover,dfn.term.is-open{text-decoration-color:currentColor;back
 @keyframes kit-tip{from{opacity:0;transform:translateY(var(--ty,4px))}to{opacity:1;transform:none}}
 .gl-tip[data-side=below]{--ty:-4px}
 
+/* ---------- Mind map (mindmap.js) ---------- */
+/* Height: override per map, e.g. <div data-mindmap="…" style="--kmap-h:520px">. Colours come from --c/--ct/--cd set per node type. */
+.kmap{--kmap-h:clamp(440px,72vh,680px);position:relative;margin:18px 0}
+.kmap-loading{display:grid;place-items:center;min-height:200px;margin:0;border-radius:var(--r);background:var(--paper);box-shadow:var(--shadow);color:var(--muted);font-size:.9rem}
+.kmap-loading.is-error{color:var(--coral-d)}
+.js .kmap.is-failed .no-js{display:block!important}
+.kmap-frame{position:relative;height:var(--kmap-h);border-radius:var(--r);overflow:hidden;background:var(--paper);box-shadow:var(--shadow);border:1px solid rgba(12,22,56,.06)}
+.kmap-view{position:absolute;inset:0;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;cursor:grab;background-image:radial-gradient(circle,rgba(12,22,56,.1) 1px,transparent 1.5px);background-size:24px 24px}
+.kmap-view.is-dragging{cursor:grabbing}
+.kmap-stage{position:absolute;left:0;top:0;width:0;height:0;transform-origin:0 0}
+.kmap-edges{position:absolute;left:0;top:0;width:1px;height:1px;max-width:none;overflow:visible;pointer-events:none}
+.kmap-tree{position:absolute;left:0;top:0}
+.kmap-edge{fill:none;stroke:var(--c);stroke-width:2.5;stroke-linecap:round;stroke-opacity:.55}
+.kmap-cross{fill:none;stroke:var(--navy-600);stroke-width:1.6;stroke-dasharray:5 6;stroke-linecap:round;stroke-opacity:.4}
+.kmap-xlabel{font:700 11px var(--sans);fill:var(--muted);text-anchor:middle;dominant-baseline:middle;paint-order:stroke;stroke:var(--paper);stroke-width:4px;stroke-linejoin:round}
+/* Nodes: pill buttons, centred on their point via the inline transform */
+.kmap-node{position:absolute;left:0;top:0;display:flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;max-width:12.5em;width:max-content;padding:8px 16px;border-radius:var(--r-pill);border:2px solid var(--c);background:var(--ct);color:var(--ink);font:700 .86rem/1.2 var(--sans);text-align:center;cursor:pointer;box-shadow:0 2px 0 color-mix(in srgb,var(--c) 50%,transparent),0 8px 18px -12px rgba(12,22,56,.45);transition:box-shadow .15s,background-color .15s}
+.kmap-node[hidden]{display:none}
+.kmap-node::after{content:"";position:absolute;inset:-6px;border-radius:inherit}
+.kmap-node:hover{background:color-mix(in srgb,var(--ct) 78%,var(--c))}
+.kmap-node:focus-visible{outline:3px solid var(--sky);outline-offset:3px}
+.kmap-node.is-selected{box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 45%,transparent),var(--shadow-lg)}
+.kmap-node.is-root{background:var(--navy);border-color:var(--navy);color:#fff;font:700 1.15rem/1.15 var(--serif);padding:14px 22px;max-width:13em;box-shadow:0 3px 0 var(--navy-950),var(--shadow-lg)}
+.kmap-node.is-root:hover{background:var(--navy-700)}
+.kmap-node.is-root.is-selected{box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 70%,transparent),var(--shadow-lg)}
+.kmap-badge{position:absolute;top:-9px;right:-6px;min-width:22px;height:22px;padding:0 6px;border-radius:var(--r-pill);background:var(--cd);color:#fff;font:700 .7rem/22px var(--sans);box-shadow:0 0 0 2px var(--paper)}
+.kmap-node.is-root .kmap-badge{background:var(--accent);color:var(--navy-900)}
+.kmap-node.is-expanded .kmap-badge{display:none}
+.kmap-hint{position:absolute;left:10px;top:10px;max-width:calc(100% - 20px);margin:0;padding:4px 12px;border-radius:var(--r-pill);background:color-mix(in srgb,var(--paper) 88%,transparent);color:var(--muted);font-size:.78rem;pointer-events:none;transition:opacity .3s var(--ease)}
+.kmap-hint.is-done{opacity:0}
+.kmap-controls{position:absolute;left:10px;bottom:10px;display:flex;flex-wrap:wrap;gap:6px}
+.kmap-btn{min-width:44px;height:44px;padding:0 12px;border:0;border-radius:var(--r-pill);background:var(--navy);color:#fff;font:700 1.2rem/1 var(--sans);cursor:pointer;box-shadow:0 3px 0 var(--navy-950);transition:transform .15s var(--ease),box-shadow .15s var(--ease)}
+.kmap-btn.text{font-size:.82rem}
+.kmap-btn:hover{background:var(--navy-700)}
+.kmap-btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--navy-950)}
+/* Note panel: right-hand side panel inside the map; a bottom sheet on narrow screens (below) */
+.kmap-panel{position:absolute;top:10px;right:10px;bottom:10px;z-index:3;width:min(360px,46%);display:flex;flex-direction:column;background:var(--paper);color:var(--ink);border-radius:var(--r-sm);border:1px solid rgba(12,22,56,.07);border-top:5px solid var(--c,var(--sky));box-shadow:var(--shadow-lg);visibility:hidden;opacity:0;transform:translateX(24px);transition:transform .24s var(--ease),opacity .2s var(--ease),visibility 0s .24s}
+.kmap-panel.is-open{visibility:visible;opacity:1;transform:none;transition:transform .24s var(--ease),opacity .2s var(--ease)}
+.kmap-panel-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 6px 0 18px}
+.kmap-type{background:var(--ct);color:var(--cd);margin:0}
+.kmap-close{flex:0 0 44px;width:44px;height:44px;border:0;border-radius:50%;background:transparent;color:var(--muted);font:400 1.7rem/1 var(--sans);cursor:pointer}
+.kmap-close:hover{background:var(--line);color:var(--ink)}
+.kmap-panel-body{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:4px 18px 20px}
+.kmap-panel [hidden]{display:none}
+.kmap-title{margin:.15em 0 .2em;font-size:1.35rem}
+.kmap-chapter{margin:0 0 .6em;font-size:.74rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.kmap-note{font-size:.95rem}
+.kmap-note>:first-child{margin-top:0}
+.kmap-quote{margin:14px 0;padding:12px 16px;border-left:4px solid var(--c);border-radius:0 var(--r-sm) var(--r-sm) 0;background:var(--ct);font:italic 400 1.02rem/1.5 var(--serif)}
+.kmap-quote p{margin:0}
+.kmap-links-title{margin:18px 0 6px;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--violet-d)}
+.kmap-links{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.kmap-link{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;padding:8px 12px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--paper);color:var(--ink);font:400 .9rem/1.3 var(--sans);text-align:left;cursor:pointer;transition:background-color .15s,border-color .15s}
+.kmap-link:hover{border-color:var(--c);background:var(--ct)}
+.kmap-link i{flex:0 0 10px;height:10px;border-radius:50%;background:var(--c)}
+.kmap-legend{display:flex;flex-wrap:wrap;gap:6px 16px;list-style:none;margin:10px 0 0;padding:0;font-size:.82rem;color:var(--muted)}
+.kmap-legend li{display:inline-flex;align-items:center;gap:6px}
+.kmap-legend i{width:12px;height:12px;border-radius:50%;background:var(--ct);border:2px solid var(--c)}
+.kmap-sr{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+@media(max-width:759.98px){
+  .kmap-panel{position:fixed;top:auto;left:0;right:0;bottom:0;z-index:35;width:auto;max-height:min(48vh,460px);border-radius:var(--r) var(--r) 0 0;border-width:5px 0 0;opacity:1;transform:translateY(100%);box-shadow:0 -14px 40px -14px rgba(12,22,56,.5);padding-bottom:env(safe-area-inset-bottom)}
+  .kmap-panel.is-open{transform:none}
+  .kmap-panel-head{padding-top:14px}
+  .kmap-panel-head::before{content:"";position:absolute;left:50%;top:7px;width:40px;height:4px;margin-left:-20px;border-radius:4px;background:var(--line)}
+}
+
 /* ---------- Audio player (audio.js) ---------- */
 body.has-player{padding-bottom:calc(var(--player-h,96px) + 28px)}
 .player{position:fixed;left:10px;right:10px;bottom:10px;z-index:25;max-width:var(--measure);margin:0 auto;background:color-mix(in srgb,var(--navy-900) 94%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:var(--on-dark);border-radius:20px;padding:10px 14px 10px 10px;box-shadow:0 14px 40px -10px rgba(0,0,0,.5)}
@@ -332,11 +398,14 @@ body.has-player{padding-bottom:calc(var(--player-h,96px) + 28px)}
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;transition-delay:0s!important}
   .js [data-step],.js [data-reveal]{opacity:1;transform:none}
   .gl-tip{animation:none}
+  .kmap-panel,.kmap-panel.is-open{transition:none}
 }
 
 /* ---------- Print ---------- */
 @media print{
   .player,.step-nav,.step-progress,.step-more,.gl-tip{display:none!important}
+  .kmap-frame,.kmap-legend{display:none!important}
+  .kmap .no-js{display:block!important}
   .js [data-step],.js [data-reveal]{opacity:1!important;transform:none!important;display:revert!important}
   .hero{background:none;color:var(--ink)}.hero h1{color:var(--ink)}
 }
