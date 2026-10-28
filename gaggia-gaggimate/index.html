@@ -85,6 +85,32 @@
   </div>
 </section>
 
+<section data-step="tour" id="tour">
+  <div class="wrap">
+    <span class="kicker">Your open machine</span>
+    <h2>Tour this photo</h2>
+    <p class="lede">Rado's own photo of an open E24-class Classic Pro, top-down with the cup warmer off. Front (switches) is on the left. Tap a number.</p>
+    <style>
+      .machine-map{position:relative;max-width:520px;margin:0 auto}
+      .machine-map img{width:100%;height:auto;display:block;border-radius:12px}
+      .machine-map .hs{position:absolute;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;border:3px dashed #fff;background:rgba(20,20,20,.65);color:#fff;font:700 16px/1 system-ui;cursor:pointer;box-shadow:0 0 0 2px rgba(0,0,0,.4)}
+      .machine-map .hs[aria-pressed="true"]{background:var(--coral,#e66);border-style:solid;transform:scale(1.12)}
+      .mm-panel{max-width:520px;margin:12px auto 0;padding:14px 16px;border:1px solid var(--line,#ccc);border-radius:12px;min-height:5em}
+      .mm-panel h3{margin:0 0 6px}
+      @media (min-width:900px){.mm-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}.mm-panel{margin:0;position:sticky;top:80px}}
+      @media (prefers-reduced-motion:no-preference){.machine-map .hs{transition:transform .15s}}
+    </style>
+    <div class="mm-grid">
+      <figure style="margin:0">
+        <div class="machine-map" id="mmap"><img src="open-machine-web.jpg" width="1200" height="1600" alt="Top-down photo of an open Gaggia Classic Pro: switches on the left, brass boiler, steam valve, pump and wiring"></div>
+        <figcaption>Photo: an open E24-class Classic Pro (Rado's machine). Hotspots are approximate.</figcaption>
+      </figure>
+      <div class="mm-panel js-only" id="mm-panel" aria-live="polite"><p>Tap a number on the photo.</p></div>
+    </div>
+    <ol class="no-js" id="mm-list"></ol>
+  </div>
+</section>
+
 <section data-step="hydraulics" class="band">
   <div class="wrap">
     <span class="kicker">The stock machine · water</span>
@@ -548,6 +574,35 @@
   S.rect(svg, L + 10, 4, 14, 14, { fill: 'var(--coral)', rx: 3 }); S.text(svg, L + 30, 16, 'Thermostat (on/off)', { 'font-size': 13 });
   S.rect(svg, L + 200, 4, 14, 14, { fill: 'var(--sky)', rx: 3 }); S.text(svg, L + 220, 16, 'PID + SSR', { 'font-size': 13 });
   Kit.steps.on('limits', function () { S.draw([a, b], { stagger: 300 }); });
+})();
+</script>
+<script>
+(function () {
+  var P = [
+    { x: 10, y: 54, t: 'Power, brew and steam switches', b: 'The three rockers on the front panel, seen from behind. Mains comes in through power; brew sends power to the pump and the <dfn class="term">three-way valve</dfn> at the same time; steam bypasses the brew <dfn class="term">thermostat</dfn> so the boiler climbs to steam temperature.', c: 'Power: mains in, out to heater circuit. Signal: none, they are plain switches.', g: 'GaggiMate taps the brew and steam switches as inputs, so the board decides what the pump and valve do.' },
+    { x: 30, y: 57, t: 'Brass boiler (region)', b: 'The small aluminium-and-brass <dfn class="term">boiler</dfn> sits here, partly hidden by wires. A heating element cast into it warms the water; thermostats on it switch the heater on and off.', c: 'Water: from pump, out to the group head and steam valve. Power: heater element, via thermostats and the <dfn class="term">thermal fuse</dfn>.', g: 'GaggiMate replaces the brew thermostat with a <dfn class="term">thermocouple</dfn> and drives the heater through an <dfn class="term">SSR</dfn>.' },
+    { x: 28, y: 64, t: 'Steam valve body (silver T)', b: 'The steel T-fitting and pipe is the steam/hot-water valve. Turning the knob opens a path from the boiler to the wand.', c: 'Water/steam: boiler → valve → wand. No electrical link.', g: 'Unchanged by GaggiMate.' },
+    { x: 26, y: 73, t: 'Steam knob', b: 'The black knob that opens the steam valve. It is purely mechanical.', c: 'Mechanical only.', g: '' },
+    { x: 50, y: 61, t: 'Clear silicone tube', b: 'Low-pressure tubing between the water tank and the pump side of the machine (tank feed and/or <dfn class="term">OPV</dfn> return). It runs down to the tank well.', c: 'Water: tank ↔ pump / OPV return. Low pressure only.', g: 'GaggiMate Pro adds a pressure sensor on the high-pressure side, not here.' },
+    { x: 64, y: 50, t: 'Vibratory pump (region)', b: 'The <dfn class="term">vibratory pump</dfn> sits on the right, mostly hidden under the black mount and wires. A coil shakes a piston back and forth to push water up to about 9–15 bar.', c: 'Water: tank in, out to boiler (via the OPV path). Power: from the brew switch (stock).', g: 'GaggiMate gives the pump its own wire from the board so it can run separately from the valve, e.g. for <dfn class="term">preinfusion</dfn>.' },
+    { x: 46, y: 24, t: 'Loose earth wires (yellow-green)', b: 'Yellow-green is always protective earth. These hang free because the cup-warmer lid was removed; they bond the lid/chassis to earth.', c: 'Power: safety earth to chassis.', g: 'Safety: reconnect them before closing the case and before plugging in.' },
+    { x: 58, y: 36, t: 'Wiring loom', b: 'The bundled, zip-tied wires carry mains between switches, thermostats, heater, pump and valve. Colours aren\u2019t a reliable guide; follow the official diagram.', c: 'Power: everything electrical. No low-voltage signal on a stock machine.', g: 'This is where GaggiMate\u2019s harness slots in; see the wiring section.' },
+    { x: 43, y: 47, t: 'Red sleeved wires (likely heater feed)', b: 'Red woven sleeving is heat-resistant insulation, used on wires that run close to the hot boiler. Likely the heater/thermostat feed; check against the diagram.', c: 'Power: to the boiler area.', g: '' }
+  ];
+  var map = document.getElementById('mmap'), panel = document.getElementById('mm-panel'), list = document.getElementById('mm-list');
+  P.forEach(function (p, i) {
+    var li = document.createElement('li'); li.innerHTML = '<b>' + p.t + '.</b> ' + p.b + ' <i>' + p.c + '</i>'; list.appendChild(li);
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'hs'; b.textContent = i + 1;
+    b.style.left = p.x + '%'; b.style.top = p.y + '%';
+    b.setAttribute('aria-pressed', 'false'); b.setAttribute('aria-label', (i + 1) + ': ' + p.t);
+    b.addEventListener('click', function () {
+      map.querySelectorAll('.hs').forEach(function (o) { o.setAttribute('aria-pressed', o === b); });
+      panel.innerHTML = '<h3>' + (i + 1) + '. ' + p.t + '</h3><p>' + p.b + '</p><p><b>Connects:</b> ' + p.c + '</p>' + (p.g ? '<p><b>GaggiMate:</b> ' + p.g + '</p>' : '');
+      if (window.Kit && Kit.glossary && Kit.glossary.scan) Kit.glossary.scan(panel);
+      if (window.innerWidth < 900) panel.scrollIntoView({ block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    });
+    map.appendChild(b);
+  });
 })();
 </script>
 </body>
