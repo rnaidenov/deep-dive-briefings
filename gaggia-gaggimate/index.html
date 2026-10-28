@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#13204a">
+<!-- Favicon: inline SVG, so it needs no path. EDIT: swap the fill colours to match the accent if you like. -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2313204a'/%3E%3Ccircle cx='27' cy='36' r='15' fill='%233d8bff'/%3E%3Ccircle cx='45' cy='20' r='8' fill='%23ff6b57'/%3E%3C/svg%3E">
+<!-- EDIT: page title + description -->
+<title>Inside the Gaggia Classic Pro · Deep Dive</title>
+<meta name="description" content="How the Gaggia Classic Pro E24 brews, what every wire does, and what the GaggiMate kit changes. Sourced, with diagrams, glossary and audio.">
+<script>
+  /* Kit loader. Topic pages live at /<slug>/, so the kit is "../_kit/".
+     The one exception is this template previewed in place at /_kit/template/, where the kit is "../".
+     Leave this block as-is when copying the template. */
+  var KIT = /\/_kit\/template\/(index\.html)?$/.test(location.pathname) ? '../' : '../_kit/';
+  document.documentElement.classList.add('js');
+  document.write('<link rel="stylesheet" href="' + KIT + 'kit.css">');
+  // Failsafe: if the kit scripts didn't load, drop the hidden-until-revealed states.
+  addEventListener('load', function () { if (!(window.Kit && Kit.steps)) document.documentElement.classList.remove('js'); });
+</script>
+<noscript><link rel="stylesheet" href="../_kit/kit.css"></noscript>
+<style>
+  /* Page-specific styles (optional). Pick this page's accent: */
+  :root { --accent: var(--sky); }
+</style>
+</head>
+<!-- data-glossary: optional terms file for <dfn class="term"> (see glossary.js). Copy glossary.json too, or drop the attribute. -->
+<body data-step-nav data-glossary="glossary.json">
+
+<header class="hero">
+  <div class="wrap">
+    <a class="back" href="../">← All briefings</a><br>
+    <span class="kicker">Machines · 28 Oct 2026</span>
+    <h1>Inside the Gaggia Classic Pro, <em class="accent">wire by wire.</em></h1>
+    <p class="lede">How the E24 turns tap water into espresso, what every thermostat, switch and valve does, and what the GaggiMate kit rewires so a computer, not a bimetal disc, decides the temperature and pressure.</p>
+    <div class="meta"><span>⏱ 18 min read</span><span>🎧 ~14 min audio</span><a href="#sources">23 sources</a></div>
+  </div>
+  <svg class="hero-art" viewBox="0 0 200 200" aria-hidden="true">
+    <circle cx="100" cy="100" r="92" fill="#1e2d63"/>
+    <rect x="48" y="40" width="104" height="96" rx="14" fill="#3d8bff"/>
+    <rect x="62" y="56" width="40" height="30" rx="6" fill="#ffc23d"/>
+    <circle cx="128" cy="70" r="12" fill="#ff6b57"/>
+    <path data-draw d="M66 104 h68 M100 104 v22" stroke="#f4efe6" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <path data-draw d="M40 160 C 70 150, 90 175, 120 158 S 160 150, 170 160" stroke="#1fc8a0" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <circle class="bob" cx="152" cy="40" r="7" fill="#1fc8a0"/>
+  </svg>
+</header>
+
+<main>
+
+<section data-step="tldr">
+  <div class="wrap">
+    <span class="kicker">The short version</span>
+    <h2>Three things worth knowing</h2>
+    <ol class="points">
+      <li><span class="pill fact">Fact</span><b>The stock machine is three switches and three heat-sensitive switches.</b> Two <dfn class="term">thermostat</dfn>s (brew 107 °C, steam 145 °C) click the heater on and off, a 184 °C <dfn class="term">thermal fuse</dfn> is the last line of defence, and the brew switch powers the pump and the <dfn class="term">three-way valve</dfn> together. <a class="cite" href="#S4">S4</a> <a class="cite" href="#S8">S8</a></li>
+      <li><span class="pill fact">Fact</span><b>GaggiMate swaps the thermostat for a sensor plus a brain.</b> The brew thermostat is replaced by a <dfn class="term">thermocouple</dfn>, the heater is driven through an <dfn class="term">SSR</dfn>, and the board gets its own wires to the pump and the valve, so it can run each one separately. Pro adds a pressure sensor. <a class="cite" href="#S1">S1</a> <a class="cite" href="#S2">S2</a></li>
+      <li><span class="pill op">Opinion</span><b>The real upgrade is a feedback loop.</b> Steadier temperature, preinfusion, pressure and flow profiles and stop-by-weight all come from the same idea: measure, compare to a target, correct. That turns dialling in from guessing into a controlled experiment.</li>
+    </ol>
+    <div class="callout warn"><span class="callout-title">Mains voltage</span>Everything inside this machine except the GaggiMate low-voltage lines is at 230 V and can kill. This page explains <i>what</i> the kit changes and <i>why</i>. It is not a replacement for the official guide, which you should follow step by step if you ever do it. <a class="cite" href="#S1">S1</a></div>
+  </div>
+</section>
+
+<section data-step="principles" data-step-tap>
+  <div class="wrap">
+    <span class="kicker">First principles</span>
+    <h2>A shot is just three problems</h2>
+    <p>Tap the section or press <b>→</b> to build it up.</p>
+    <div class="card ill" data-reveal="next">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="#dde9ff"/><path d="M30 30 h40 v40 h-40z" fill="#3d8bff"/><path d="M50 70 v18" stroke="#3d8bff" stroke-width="6"/></svg>
+      <div><h3>1 · Move water</h3>Something has to push about 40 g of water through a packed bed of coffee. That is the pump's job.</div>
+    </div>
+    <div class="card ill" data-reveal="next">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="#ffe3df"/><path d="M50 22 C 66 44, 66 60, 50 76 C 34 60, 34 44, 50 22z" fill="#ff6b57"/></svg>
+      <div><h3>2 · Heat it to the right temperature</h3>Water near 90–96 °C dissolves the flavours we want quickly. Too cool tastes sour, too hot can taste harsh. The <dfn class="term">boiler</dfn> does this. <a class="cite" href="#S20">S20</a></div>
+    </div>
+    <div class="card ill" data-reveal="next">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="#d4f6ec"/><rect x="26" y="44" width="48" height="14" rx="4" fill="#1fc8a0"/><path d="M50 20 v20 M50 62 v20" stroke="#13204a" stroke-width="5"/></svg>
+      <div><h3>3 · Control how it meets the coffee</h3>The puck pushes back. <dfn class="term">Pressure</dfn> only exists because the coffee has <dfn class="term">resistance</dfn>. Without a puck, the same pump just sprays water at near-zero pressure.</div>
+    </div>
+    <div class="math" data-reveal="next">flow ≈ pressure ÷ resistance</div>
+    <div class="callout key" data-reveal="next"><span class="callout-title">Why this matters</span>Grind finer and resistance rises. At the same pump effort, <dfn class="term">flow</dfn> drops and pressure at the puck rises toward the limit the valve allows. Your grinder setting is literally a resistance knob. The <a href="../espresso/">espresso briefing</a> covers how this links to <dfn class="term">extraction yield</dfn>.</div>
+    <div class="callout example" data-reveal="next"><span class="callout-title">Gentle maths</span><span class="pill fact">Fact</span> EY = TDS × drink mass ÷ dose. 18 g in, 36 g out, 10% TDS → 0.10 × 36 ÷ 18 = <b>20%</b>. Everything the machine does is about making that number repeatable. <a class="cite" href="#S20">S20</a></div>
+  </div>
+</section>
+
+<section data-step="hydraulics" class="band">
+  <div class="wrap">
+    <span class="kicker">The stock machine · water</span>
+    <h2>Follow a drop of water</h2>
+    <p class="lede">Pick a mode to see which path is live.</p>
+    <div class="toggle js-only" role="group" aria-label="Water path mode" style="margin:8px 0 14px">
+      <button type="button" data-hmode="brew" aria-pressed="true">Brewing</button>
+      <button type="button" data-hmode="release" aria-pressed="false">Brew off</button>
+      <button type="button" data-hmode="steam" aria-pressed="false">Steam / hot water</button>
+    </div>
+    <figure>
+      <svg id="hydro" class="hydro brew" viewBox="0 0 640 380" role="img" aria-labelledby="hydro-t">
+        <title id="hydro-t">Water path: tank, pump, over-pressure valve with return to tank, boiler, three-way valve to group head and portafilter, with a drain path to the drip tray and a steam valve to the wand</title>
+        <style>
+          .hydro text{font:600 14px Inter,sans-serif;fill:#f4efe6}
+          .hydro .box{fill:#1e2d63;stroke:#5d6aa0;stroke-width:2}
+          .hydro .pipe{fill:none;stroke:#4a5687;stroke-width:6;stroke-linecap:round}
+          .hydro.brew .p-brew,.hydro.release .p-rel,.hydro.steam .p-steam{stroke:#3d8bff;stroke-dasharray:10 8;animation:flowd 1s linear infinite}
+          .hydro.brew .p-ret{stroke:#ffc23d;stroke-dasharray:6 8;animation:flowd 1.4s linear infinite}
+          .hydro.release .p-rel{stroke:#ff6b57}
+          .hydro.steam .p-steam{stroke:#f4efe6}
+          @keyframes flowd{to{stroke-dashoffset:-36}}
+          @media (prefers-reduced-motion:reduce){.hydro .pipe{animation:none!important}}
+        </style>
+        <path class="pipe p-brew p-steam" d="M95 300 H170"/>
+        <path class="pipe p-brew p-steam" d="M230 300 H270 V200 H300"/>
+        <path class="pipe p-ret" d="M200 270 V230 H120 V250"/>
+        <path class="pipe p-brew" d="M400 170 H470"/>
+        <path class="pipe p-brew" d="M520 195 V250"/>
+        <path class="pipe p-rel" d="M520 145 V80 H600 V60"/>
+        <path class="pipe p-steam" d="M350 130 V60 H250"/>
+        <rect class="box" x="25" y="250" width="70" height="100" rx="10"/><text x="60" y="305" text-anchor="middle">Tank</text>
+        <rect class="box" x="160" y="280" width="80" height="44" rx="10"/><text x="200" y="307" text-anchor="middle">Pump</text>
+        <rect class="box" x="160" y="235" width="80" height="34" rx="8" style="fill:#3a2a12;stroke:#ffc23d"/><text x="200" y="257" text-anchor="middle">OPV</text>
+        <rect class="box" x="300" y="130" width="100" height="100" rx="14" style="fill:#4a1f1a;stroke:#ff6b57"/><text x="350" y="185" text-anchor="middle">Boiler</text>
+        <rect class="box" x="470" y="145" width="100" height="50" rx="10"/><text x="520" y="175" text-anchor="middle">3-way valve</text>
+        <rect class="box" x="465" y="250" width="110" height="40" rx="10"/><text x="520" y="275" text-anchor="middle">Group + puck</text>
+        <path d="M490 300 h60 l-8 24 h-44z" fill="#c98a4b"/><text x="520" y="350" text-anchor="middle">Cup</text>
+        <rect class="box" x="560" y="30" width="80" height="30" rx="8"/><text x="600" y="51" text-anchor="middle">Drip tray</text>
+        <rect class="box" x="170" y="40" width="80" height="40" rx="8"/><text x="210" y="65" text-anchor="middle">Wand</text>
+        <text x="120" y="225" text-anchor="middle" style="fill:#ffc23d;font-size:12px">surplus → tank</text>
+        <text x="355" y="50" style="font-size:12px">steam valve (knob)</text>
+      </svg>
+      <figcaption>Simplified from the Gaggia service manual's hydraulic diagram and the GaggiMate plumbing steps (the OPV sits on the pump's outlet). Redrawn for clarity. <a class="cite" href="#S5">S5</a> <a class="cite" href="#S1">S1</a> <a class="cite" href="#S6">S6</a></figcaption>
+    </figure>
+    <ol class="points">
+      <li><span class="pill fact">Fact</span><b>Tank → pump.</b> A <dfn class="term">vibratory pump</dfn> (Ulka EP5 type on 230 V machines) is rated 15 bar. That is what it can push against a closed outlet, not what reaches your coffee. <a class="cite" href="#S5">S5</a> <a class="cite" href="#S8">S8</a></li>
+      <li><span class="pill fact">Fact</span><b>The <dfn class="term">OPV</dfn></b> on the pump outlet is a fixed spring valve. Once pressure passes its set point, it sends surplus water back to the tank. Sources disagree on the factory figure: the 2019 service manual says 11 bar (+1/−0.5), retailers say 9–12 bar depending on market, and no measured reading for an EU E24 was found. <a class="cite" href="#S5">S5</a> <a class="cite" href="#S6">S6</a></li>
+      <li><span class="pill fact">Fact</span><b>Boiler.</b> On the E24 it is brass (earlier Classic Pros used aluminium). Cold water in, hot water out the top. <a class="cite" href="#S7">S7</a></li>
+      <li><span class="pill fact">Fact</span><b>Three-way valve.</b> Powered, it connects boiler to group. Unpowered, it connects the group to the drip tray, which is why you hear a <i>pssht</i> and get a drier puck when you stop the shot. <a class="cite" href="#S4">S4</a> <a class="cite" href="#S15">S15</a></li>
+      <li><span class="pill fact">Fact</span><b>Steam.</b> Opening the knob lets steam (or, with the pump running, hot water) leave through the wand. There is no electrical "steaming" state. <a class="cite" href="#S4">S4</a></li>
+    </ol>
+  </div>
+</section>
+
+<section data-step="electrics">
+  <div class="wrap">
+    <span class="kicker">The stock machine · electricity</span>
+    <h2>Six states, no computer</h2>
+    <p>The stock Gaggia has no microchip deciding anything about the brew. Comori Coffee, an electrical engineer, redrew the official diagram into a functional one. Here are its states. <a class="cite" href="#S4">S4</a></p>
+    <div class="toggle js-only" role="group" aria-label="Machine state" style="margin:8px 0 14px;flex-wrap:wrap">
+      <button type="button" data-st="0" aria-pressed="true">Heat-up</button>
+      <button type="button" data-st="1" aria-pressed="false">Brew ready</button>
+      <button type="button" data-st="2" aria-pressed="false">Brewing</button>
+      <button type="button" data-st="3" aria-pressed="false">Steam heat</button>
+      <button type="button" data-st="4" aria-pressed="false">Steam ready</button>
+    </div>
+    <figure class="card">
+      <svg id="elec" viewBox="0 0 640 260" role="img" aria-labelledby="elec-t">
+        <title id="elec-t">Functional circuit: mains through power switch and safety fuse to the heater, which is gated by the brew thermostat in series with the steam thermostat; the steam switch bypasses the brew thermostat; the brew switch powers pump and three-way valve.</title>
+        <style>
+          #elec text{font:600 13px Inter,sans-serif;fill:#13204a}
+          #elec .w{stroke:#c9cfdf;stroke-width:4;fill:none}
+          #elec .on{stroke:#ff6b57}
+          #elec .part{fill:#fff;stroke:#13204a;stroke-width:2}
+          #elec .part.on{fill:#ffe3df;stroke:#ff6b57}
+          #elec .lamp.on{fill:#ffc23d}
+        </style>
+        <path class="w" id="w-main" d="M20 40 H620"/>
+        <path class="w" id="w-ret" d="M20 230 H620"/>
+        <path class="w" id="w-heat" d="M80 40 V230"/>
+        <path class="w" id="w-bypass" d="M80 70 H170 V150 H80"/>
+        <path class="w" id="w-pump" d="M420 40 V230"/>
+        <path class="w" id="w-valve" d="M540 40 V230"/>
+        <rect class="part" id="p-fuse" x="20" y="25" width="50" height="30" rx="6"/><text x="45" y="45" text-anchor="middle">Fuse</text>
+        <rect class="part" id="p-st" x="45" y="75" width="70" height="30" rx="6"/><text x="80" y="95" text-anchor="middle">Steam T</text>
+        <rect class="part" id="p-bt" x="45" y="115" width="70" height="30" rx="6"/><text x="80" y="135" text-anchor="middle">Brew T</text>
+        <rect class="part" id="p-ssw" x="140" y="95" width="70" height="30" rx="6"/><text x="175" y="115" text-anchor="middle">Steam sw</text>
+        <rect class="part" id="p-heat" x="45" y="170" width="70" height="36" rx="6"/><text x="80" y="193" text-anchor="middle">Heater</text>
+        <rect class="part" id="p-bsw" x="385" y="65" width="70" height="30" rx="6"/><text x="420" y="85" text-anchor="middle">Brew sw</text>
+        <rect class="part" id="p-pump" x="385" y="160" width="70" height="36" rx="6"/><text x="420" y="183" text-anchor="middle">Pump</text>
+        <rect class="part" id="p-valve" x="500" y="160" width="80" height="36" rx="6"/><text x="540" y="183" text-anchor="middle">3-way valve</text>
+        <circle class="part lamp" id="l-brew" cx="250" cy="130" r="14"/><text x="250" y="165" text-anchor="middle">Brew lamp</text>
+        <circle class="part lamp" id="l-steam" cx="310" cy="90" r="14"/><text x="310" y="125" text-anchor="middle">Steam lamp</text>
+      </svg>
+      <p id="elec-note" class="caption" aria-live="polite">Heat-up: power on, boiler cold. Both thermostats are closed, so current flows straight through them and the heater runs at full power. The lamps are shorted out and stay dark.</p>
+      <figcaption class="caption">A simplified functional view after Comori Coffee's diagram; not wire-accurate (see the official diagram below for that). <a class="cite" href="#S4">S4</a></figcaption>
+    </figure>
+    <div class="no-js card"><ol>
+      <li><b>Heat-up:</b> both thermostats closed, heater full on, lamps dark (shorted out).</li>
+      <li><b>Brew ready:</b> brew thermostat opens at temperature; current must pass through the brew lamp, which has far higher resistance, so the lamp lights and the heater effectively stops.</li>
+      <li><b>Brewing:</b> brew switch powers the pump and the 3-way valve together. Heater still cycles on the brew thermostat.</li>
+      <li><b>Steam heat:</b> steam switch bypasses the brew thermostat; heater runs until the steam thermostat opens. It also cuts the valve, so the group stays closed.</li>
+      <li><b>Steam ready:</b> steam thermostat opens, steam lamp lights, heater effectively off. It cycles.</li>
+    </ol></div>
+    <div class="grid">
+      <div class="card sky"><div class="stat" style="color:var(--sky-d)">107 °C</div><p>Standard brew thermostat (boiler surface, not cup). <a class="cite" href="#S8">S8</a> <a class="cite" href="#S9">S9</a></p></div>
+      <div class="card coral"><div class="stat" style="color:var(--coral-d,#d4483a)">145 °C</div><p>Standard steam thermostat (155 °C upgrade exists). <a class="cite" href="#S8">S8</a> <a class="cite" href="#S9">S9</a></p></div>
+      <div class="card sun"><div class="stat">184 °C</div><p>Thermal fuse: one-shot cut-out. A retailer's figure; no Gaggia document for the E24 states it. <a class="cite" href="#S7">S7</a> <a class="cite" href="#S8">S8</a></p></div>
+    </div>
+    <div class="callout key"><span class="callout-title">The Bulgarian E24 detail</span><span class="pill fact">Fact</span> EU 230/240 V machines carry an <dfn class="term">Eco PCB</dfn>, a small auto-off board wired into the switches (the C.1, C.2 and S.1 wires only exist on 240 V machines). The service manual lists it as "CPU+SW ECO-SWITCH". Your machine has one. <a class="cite" href="#S1">S1</a> <a class="cite" href="#S5">S5</a></div>
+  </div>
+</section>
+
+<section data-step="limits">
+  <div class="wrap">
+    <span class="kicker">Systems view</span>
+    <h2>Why stock falls short for control</h2>
+    <p>A thermostat is a <dfn class="term" data-en="Control that is only fully on or fully off, like a light switch. No in-between." data-bg="двупозиционно (вкл./изкл.) регулиране">bang-bang</dfn> controller: it is either fully on or fully off, and it flips at slightly different temperatures going up and coming down. That gap is <dfn class="term">hysteresis</dfn>. <a class="cite" href="#S19">S19</a> <a class="cite" href="#S17">S17</a></p>
+    <figure class="card">
+      <span class="pill what">What-if · illustrative shape, not measured</span>
+      <div id="tempchart"></div>
+      <p class="no-js caption">Illustration: the thermostat line saw-tooths up and down around its switch point, overshooting after each heater burst; the PID line rises, settles and stays close to its target.</p>
+      <figcaption class="caption">Shape only. The real swing on your machine depends on where the thermostat sits, the boiler mass, and timing; I found no measured E24 trace to show here.</figcaption>
+    </figure>
+    <ul>
+      <li><span class="pill fact">Fact</span><b>Temperature:</b> the heater is either full power or off, with the switch on the outside of the boiler. Where in the cycle you start the shot changes the water temperature. That is why "temperature surfing" exists. <a class="cite" href="#S4">S4</a></li>
+      <li><span class="pill fact">Fact</span><b>Pressure:</b> no gauge, no sensor, a fixed OPV. You cannot see or change it without opening the machine. <a class="cite" href="#S6">S6</a></li>
+      <li><span class="pill fact">Fact</span><b>Pump and valve are welded together</b> by one switch. You cannot have the valve open with the pump paused, which is what a soak-style preinfusion needs. <a class="cite" href="#S4">S4</a></li>
+      <li><span class="pill op">Opinion</span><b>No stopping by weight.</b> You watch a scale and react, adding a second or two of human lag every shot.</li>
+    </ul>
+  </div>
+</section>
+
+<section data-step="what">
+  <div class="wrap">
+    <span class="kicker">The kit</span>
+    <h2>What GaggiMate is</h2>
+    <p><span class="pill fact">Fact</span> An open-source controller: a board with its own power supply, a touchscreen, a <dfn class="term">thermocouple</dfn> and an <dfn class="term">SSR</dfn>. The Pro version adds a pressure <dfn class="term">transducer</dfn> plumbed into the water line. <a class="cite" href="#S2">S2</a> <a class="cite" href="#S23">S23</a></p>
+    <div class="table-wrap"><table>
+      <caption class="caption">From the official comparison (docs.gaggimate.eu). <a class="cite" href="#S2">S2</a></caption>
+      <thead><tr><th>Feature</th><th>Standard</th><th>Pro</th></tr></thead>
+      <tbody>
+        <tr><td><dfn class="term">PID</dfn> temperature control</td><td>✓</td><td>✓</td></tr>
+        <tr><td>Simple brew profiles (pump/valve phases, timed)</td><td>✓</td><td>✓</td></tr>
+        <tr><td>Brew by weight with Bluetooth scale</td><td>✓</td><td>✓</td></tr>
+        <tr><td>Profiles with pressure / flow control</td><td>–</td><td>✓</td></tr>
+        <tr><td>Exit conditions, phase transitions</td><td>–</td><td>✓</td></tr>
+        <tr><td>Shot diagrams</td><td>weight + temp only</td><td>✓ (incl. pressure)</td></tr>
+        <tr><td>Steam assist with pump</td><td>less smooth</td><td>✓</td></tr>
+        <tr><td>Web UI, OTA updates, Home Assistant, hot water</td><td>✓</td><td>✓</td></tr>
+      </tbody>
+    </table></div>
+    <p class="caption">Stable release at time of writing: v1.7.3. <a class="cite" href="#S2">S2</a></p>
+  </div>
+</section>
+
+<section data-step="wiring" class="band">
+  <div class="wrap">
+    <span class="kicker">The intimate part</span>
+    <h2>What every wiring change does</h2>
+    <p class="lede">For each change: what the part did stock, what is cut or bridged, and what the board gains. Labels (BT, ST, S.x, C.x, PMP) are the official guide's.</p>
+    <figure>
+      <a href="diagram-240v.jpg"><img src="diagram-240v.jpg" alt="Official GaggiMate wiring diagram for the 230/240 V Gaggia Classic Pro with Eco PCB, showing coloured new wires to the GaggiMate Pro board and red crosses on removed connections" style="width:100%;border-radius:12px;background:#fff" loading="lazy"></a>
+      <figcaption>Official 240 V (Eco PCB) diagram, SIN035UR. Thick coloured lines are the kit's wires; red ✕ marks removed connections. Tap to open full size. Image © GaggiMate docs, shown for education. <a class="cite" href="#S1">S1</a> (<a href="diagram-120v.jpg" style="color:inherit">120 V version</a>)</figcaption>
+    </figure>
+
+    <div class="card dark" data-reveal>
+      <h3>① Brew thermostat → red jumper + thermocouple</h3>
+      <p><b>Stock:</b> BT opens at about 107 °C and stops the heater. <b>Change:</b> unscrew BT, bridge its two wires BT.A–BT.B with a red <dfn class="term">jumper</dfn>, screw an M4 thermocouple into the same hole (hand-tight, red = +, blue = −). <b>Gain:</b> the board now <i>reads</i> temperature instead of a disc snapping at one point. <a class="cite" href="#S1">S1</a></p>
+      <img src="bt-jumper.jpg" alt="Red jumper bridging BT.A and BT.B" style="max-width:260px;border-radius:10px" loading="lazy">
+    </div>
+    <div class="card dark" data-reveal>
+      <h3>② Steam thermostat wires → SSR output</h3>
+      <p><b>Stock:</b> ST gates the heater. <b>Change:</b> ST.A and ST.B come off the thermostat and are extended with yellow 18 AWG wires to the SSR's output side (polarity doesn't matter on AC). The SSR's input gets the yellow (+) / black (−) signal from the board. The ST can stay in place or be removed. <b>Gain:</b> the board switches the heater's mains current with a few volts, silently and as often as it wants. <a class="cite" href="#S1">S1</a></p>
+    </div>
+    <div class="card dark" data-reveal>
+      <h3>③ Steam switch: S.5 to Neutral, S.1 out, S.4 moved</h3>
+      <p><b>Change:</b> S.5 (white) goes to the board's N terminal via blue wire. On 240 V, S.1 is removed and insulated; on both, S.4 (black) moves to the S.1 position. <b>Gain:</b> the board gets <dfn class="term">neutral</dfn> for its own supply, and the steam switch no longer bypasses anything at mains level. <span class="pill est">My reading</span> of the diagram, not stated in the guide. <a class="cite" href="#S1">S1</a></p>
+      <img src="steam-switch-modded.jpg" alt="Steam switch after modification" style="max-width:260px;border-radius:10px" loading="lazy">
+    </div>
+    <div class="card dark" data-reveal>
+      <h3>④ Brew switch: Eco PCB bypassed, C.4 to Line</h3>
+      <p><b>Change (240 V only):</b> C.1 and C.2 come off the switch and are joined with a yellow jumper, taking the Eco board's auto-off out of the loop. <b>Both:</b> C.4 (brown) is extended with grey wire to the board's L terminal. <b>Gain:</b> the board gets switched <dfn class="term">line</dfn> power, and standby is now handled by GaggiMate. <a class="cite" href="#S1">S1</a></p>
+      <img src="brew-switch-modded.jpg" alt="Brew switch after modification" style="max-width:220px;border-radius:10px" loading="lazy">
+    </div>
+    <div class="card dark" data-reveal>
+      <h3>⑤ Pump and valve get separate wires</h3>
+      <p><b>Stock:</b> one switch feeds both. <b>Change:</b> PMP.B (grey, not the thermal-fuse side) is lifted off the pump and run by red wire to the board's V (valve) terminal. A new green wire goes from that pump terminal to the board's P (pump) terminal. <b>Gain:</b> pump and valve are independent. Valve open, pump off = soak. Pump at partial power = gentle fill. <a class="cite" href="#S1">S1</a></p>
+    </div>
+    <div class="card dark" data-reveal>
+      <h3>⑥ Pro only: a T in the water line + pressure transducer</h3>
+      <p><b>Change:</b> unscrew the pump from the OPV, add an L-fitting and T-fitting, run PTFE tube from the T to a pressure transducer lying at the bottom of the machine, bleed the air out. <b>Gain:</b> the board can see pressure, so it can hold a target pressure or estimate flow and change pump power to match: a closed loop. <a class="cite" href="#S1">S1</a> <a class="cite" href="#S3">S3</a></p>
+    </div>
+    <div class="card dark" data-reveal>
+      <h3>⑦ Optional: keep the physical buttons as low-voltage inputs</h3>
+      <p>A green/black 4-wire cable connects the <i>free</i> sides of the brew and steam switches (C.1, C.2, S.4, S.5) to the board as sense lines. The guide warns: never mix high and low voltage on the same side of a switch. <a class="cite" href="#S1">S1</a></p>
+    </div>
+    <div class="callout warn"><span class="callout-title">First power-on check (from the guide)</span>Heater should <i>not</i> heat at power-on and nothing should run; the SSR's LED tells you if the heater is being driven. Before that: multimeter check for shorts and HV/LV mix-ups, and continuity through the switches. <a class="cite" href="#S1">S1</a></div>
+  </div>
+</section>
+
+<section data-step="physics">
+  <div class="wrap">
+    <span class="kicker">Physics &amp; electronics</span>
+    <h2>The five ideas the kit runs on</h2>
+    <div class="grid">
+      <div class="card sky"><h3>PID: a thermostat that does maths</h3><p><span class="pill fact">Fact</span> Output = P (how far off now) + I (how long you've been off) + D (how fast you're changing). Near target it eases off, so it doesn't overshoot like an on/off switch. <a class="cite" href="#S11">S11</a></p></div>
+      <div class="card mint"><h3>Duty cycle: how a switch makes "half power"</h3><p><span class="pill fact">Fact</span> An SSR is still on/off, but switched quickly. On 30% of the time → a 1200 W heater averages <b>360 W</b>. The PID picks the percentage. <a class="cite" href="#S18">S18</a> <a class="cite" href="#S5">S5</a></p></div>
+      <div class="card sun"><h3>SSR: a switch with no moving parts</h3><p><span class="pill fact">Fact</span> A few volts light an internal LED, which triggers semiconductors that pass mains current. Silent, no contact wear. <a class="cite" href="#S12">S12</a></p></div>
+      <div class="card coral"><h3>Thermocouple: heat makes a voltage</h3><p><span class="pill fact">Fact</span> Two different metals joined at a tip make a tiny voltage that grows with temperature difference: the <dfn class="term">Seebeck effect</dfn>. Microvolts per degree, so the board needs an amplifier, and polarity matters. <a class="cite" href="#S13">S13</a> <a class="cite" href="#S14">S14</a></p></div>
+      <div class="card violet"><h3>Solenoid and transducer</h3><p><span class="pill fact">Fact</span> A <dfn class="term">solenoid</dfn> is a coil that becomes a magnet and pulls a plunger, opening the valve. A pressure transducer flexes a diaphragm and turns that strain into a voltage. <a class="cite" href="#S15">S15</a> <a class="cite" href="#S16">S16</a></p></div>
+    </div>
+    <p class="caption"><span class="pill est">Not confirmed</span> Exactly how the board varies pump power (e.g. which AC switching method) wasn't stated in the docs I opened; see the GaggiMate source code for that. <a class="cite" href="#S23">S23</a></p>
+  </div>
+</section>
+
+<section data-step="better">
+  <div class="wrap">
+    <span class="kicker">So what?</span>
+    <h2>How this makes coffee better</h2>
+    <figure class="card">
+      <svg viewBox="0 0 640 230" role="img" aria-labelledby="loop-t">
+        <title id="loop-t">Control loop: the profile sets targets for the controller, which drives heater, pump and valve; the puck and boiler respond; sensors for temperature, pressure and weight feed back to the controller.</title>
+        <style>#loopt text{font:600 14px Inter,sans-serif}</style>
+        <g id="loopt">
+        <rect x="10" y="85" width="110" height="56" rx="12" fill="#ece3ff"/><text x="65" y="118" text-anchor="middle">Profile</text>
+        <rect x="170" y="85" width="120" height="56" rx="12" fill="#dde9ff"/><text x="230" y="118" text-anchor="middle">Controller</text>
+        <rect x="340" y="20" width="130" height="44" rx="10" fill="#ffe3df"/><text x="405" y="47" text-anchor="middle">Heater (SSR)</text>
+        <rect x="340" y="91" width="130" height="44" rx="10" fill="#ffe3df"/><text x="405" y="118" text-anchor="middle">Pump</text>
+        <rect x="340" y="162" width="130" height="44" rx="10" fill="#ffe3df"/><text x="405" y="189" text-anchor="middle">3-way valve</text>
+        <rect x="510" y="85" width="120" height="56" rx="12" fill="#fff1c9"/><text x="570" y="111" text-anchor="middle">Boiler +</text><text x="570" y="129" text-anchor="middle">puck + cup</text>
+        <path d="M120 113 H165 M290 105 L335 45 M290 113 H335 M290 121 L335 182 M470 42 L505 100 M470 113 H505 M470 184 L505 128" stroke="#13204a" stroke-width="2.5" fill="none"/>
+        <path d="M570 141 V222 H230 V146" stroke="#1fc8a0" stroke-width="3" fill="none" stroke-dasharray="7 6"/>
+        <text x="400" y="218" text-anchor="middle" fill="#0d8a6c">feedback: temperature · pressure (Pro) · weight (scale)</text>
+        </g>
+      </svg>
+    </figure>
+    <ol class="points">
+      <li><span class="pill fact">Fact</span><b>Stable temperature.</b> PID control replaces the on/off cycle, so the brew starts at the same temperature each time. <a class="cite" href="#S2">S2</a> <a class="cite" href="#S11">S11</a></li>
+      <li><span class="pill fact">Fact</span><b>Phases.</b> A profile is a list of phases (fill, preinfusion, brew); each runs the pump on/off or at a set pressure (Pro), with the valve open or shut, until a weight target or a time limit. The docs' example: 3 s fill, 5 s <dfn class="term">preinfusion</dfn>, brew to 36 g at 93 °C. <a class="cite" href="#S3">S3</a></li>
+      <li><span class="pill op">Opinion</span><b>Even wetting, less <dfn class="term">channeling</dfn>.</b> A gentle fill and soak lets the puck swell before full pressure, which most guides credit with fewer weak spots. It's a widely held view; the effect size varies. <a class="cite" href="#S20">S20</a></li>
+      <li><span class="pill fact">Fact</span><b>Stop by weight.</b> With a Bluetooth scale, the phase ends at the target grams, so the ratio (and therefore EY) stops depending on your reaction time. Without a scale it estimates weight from the pressure curve. <a class="cite" href="#S3">S3</a></li>
+      <li><span class="pill op">Opinion</span><b>Shot diagrams close <i>your</i> loop.</b> Seeing the pressure and weight curves makes the grinder adjustment on the C3 Pro a measured decision rather than a hunch.</li>
+    </ol>
+  </div>
+</section>
+
+<section data-step="safety">
+  <div class="wrap">
+    <span class="kicker">Safety</span>
+    <h2>Before anyone opens the case</h2>
+    <div class="callout warn"><span class="callout-title">From the official guide</span>
+      <ul>
+        <li>Unplug. Work dry. A boiler stays hot and pressurised after switch-off; wait until it's cold. <a class="cite" href="#S1">S1</a> <a class="cite" href="#S6">S6</a></li>
+        <li>Never mix high voltage (230 V) and low voltage (board signals) on the same side of a switch.</li>
+        <li>Insulate every joint and spare end (heatshrink or tape). Reconnect both grounding wires on the cup warmer.</li>
+        <li>Multimeter check for shorts and continuity before first power-on.</li>
+        <li>Follow local electrical codes. If unsure, use a qualified technician. Modifying the machine voids the warranty. <a class="cite" href="#S6">S6</a></li>
+        <li>Never bridge a blown thermal fuse. <a class="cite" href="#S7">S7</a></li>
+      </ul>
+    </div>
+    <p class="muted">This page explains the system. It is not an install checklist.</p>
+  </div>
+</section>
+
+<section data-step="think">
+  <div class="wrap">
+    <span class="kicker">Think about it</span>
+    <h2>Questions to chew on</h2>
+    <ol class="points">
+      <li><b>Safety lens (failure modes):</b> once the brew thermostat is jumpered out, what still stops the boiler running away if the board or SSR fails "on"? Think about the steam thermostat if you leave it in, and the thermal fuse.</li>
+      <li><b>Control lens (decoupling):</b> why does wiring the pump and valve separately make preinfusion possible without buying a fancier pump?</li>
+      <li><b>Systems lens (where's the sensor?):</b> the thermocouple sits in the boiler wall, not in the puck. What does that mean for how close "93 °C on screen" is to the water hitting your coffee?</li>
+      <li><b>First-principles lens:</b> if pressure only exists because the puck resists, what does a "9 bar profile" do on a puck ground far too coarse?</li>
+    </ol>
+  </div>
+</section>
+
+<section data-step="practice">
+  <div class="wrap">
+    <span class="kicker">Optional practice</span>
+    <h2>Two back-of-envelope sums</h2>
+    <div class="callout example"><span class="callout-title">1 · Heat a cup's worth of water</span>Heating water takes about 4.18 J per gram per °C. <a class="cite" href="#S21">S21</a> Warming 100 g from 20 °C to 93 °C: 100 × 4.18 × 73 ≈ <b>30.5 kJ</b>. At 1200 W: 30,500 J ÷ 1200 W ≈ <b>25 s</b>. <span class="pill est">Estimate</span> The real warm-up is much longer because the brass boiler and group must heat too, and that metal mass is the reason stable temperature needs patience.</div>
+    <div class="callout example"><span class="callout-title">2 · Duty cycle</span>The boiler loses heat to the room. Suppose (what-if) it needs 250 W on average to hold temperature. With a 1200 W heater, the PID should settle at about 250 ÷ 1200 ≈ <b>21%</b> on-time. A thermostat delivers that same average as long full-power bursts instead, which is where the swing comes from.</div>
+  </div>
+</section>
+
+<section data-step="deeper">
+  <div class="wrap">
+    <span class="kicker">Go deeper</span>
+    <h2>A learning path</h2>
+    <ol class="path">
+      <li class="path-step" data-level="start" data-n="1"><b>Comori Coffee's state walkthrough</b> with the diagram open. It makes the stock machine click. <a class="cite" href="#S4">S4</a></li>
+      <li class="path-step" data-level="next" data-n="2"><b>Read the full GaggiMate GCP guide once, end to end,</b> before touching anything, as it says. <a class="cite" href="#S1">S1</a></li>
+      <li class="path-step" data-level="next" data-n="3"><b>Claude-y's companion walkthrough</b> (240 V Eco defaults) for an interactive tour. <a class="cite" href="#S22">S22</a></li>
+      <li class="path-step" data-level="deep" data-n="4"><b>PID on Wikipedia,</b> then the profiles docs: read one profile JSON and trace each phase. <a class="cite" href="#S11">S11</a> <a class="cite" href="#S3">S3</a></li>
+      <li class="path-step" data-level="expert" data-n="5"><b>The GaggiMate source on GitHub</b>, to see how the pump is actually driven. <a class="cite" href="#S23">S23</a></li>
+    </ol>
+  </div>
+</section>
+
+<section data-step="sources" id="sources">
+  <div class="wrap">
+    <span class="kicker">Sources</span>
+    <h2>Where this comes from</h2>
+    <p class="caption">All opened on 28 Oct 2026. Wikipedia entries are secondary sources for the general physics terms in the glossary popups.</p>
+    <ol class="source-list">
+      <li id="S1"><span class="src-id">S1</span><div>
+        <a class="src-title" href="https://docs.gaggimate.eu/docs/installation-gcp/">GaggiMate docs: Installation, Gaggia Classic Pro/Evo (2019+)</a>
+        <span class="src-meta"><span class="src-type">Docs</span>opened 28 Oct 2026</span>
+        <p class="src-note">Supports: Official guide, wiring labels, 120 V and 240 V Eco diagrams, all install changes; source of the diagram images.</p></div></li>
+      <li id="S2"><span class="src-id">S2</span><div>
+        <a class="src-title" href="https://docs.gaggimate.eu/">GaggiMate docs: Getting started and Standard vs Pro</a>
+        <span class="src-meta"><span class="src-type">Docs</span>opened 28 Oct 2026</span>
+        <p class="src-note">Supports: Feature table, release v1.7.3.</p></div></li>
+      <li id="S3"><span class="src-id">S3</span><div>
+        <a class="src-title" href="https://docs.gaggimate.eu/docs/profiles/">GaggiMate docs: Profiles</a>
+        <span class="src-meta"><span class="src-type">Docs</span>opened 28 Oct 2026</span>
+        <p class="src-note">Supports: Phases, valve/pump states, weight targets, 3 s/5 s/36 g/93 °C example.</p></div></li>
+      <li id="S4"><span class="src-id">S4</span><div>
+        <a class="src-title" href="https://comoricoffee.com/en/gaggia-classic-pro-circuit-diagram-en/">Comori Coffee: Gaggia Classic Pro circuit diagram, how does it work?</a>
+        <span class="src-meta"><span class="src-type">Blog</span>opened 28 Oct 2026</span>
+        <p class="src-note">Supports: Functional states, lamps shorted, steam switch bypass, over-temp 184 °C. Written for the SIN035R model by an electrical engineer.</p></div></li>
+      <li id="S5"><span class="src-id">S5</span><div>
+        <a class="src-title" href="https://kaffeprinsen.se/wp-content/uploads/2024/12/SMA_GAGGIA_CLASSIC_REV04_EN-1.pdf">Gaggia service manual: Classic 2019 and Classic Evo Pro (Rev.04, 2023), hosted by Kaffeprinsen</a>
+        <span class="src-meta"><span class="src-type">Manual</span>opened 28 Oct 2026</span>
+        <p class="src-note">Supports: 230 V 1200 W, 15 bar pump, 11 bar safety valve, hydraulic diagram, Eco-switch board. Predates the E24.</p></div></li>
+      <li id="S6"><span class="src-id">S6</span><div>
+        <a class="src-title" href="https://espressomanual.com/gaggia/classic-e24/brew-pressure/">Espresso Manual: E24 / Evo Pro / Classic Pro brew pressure</a>
+        <span class="src-meta"><span class="src-type">Guide</span>opened 28 Oct 2026</span>
+        <p class="src-note">Supports: Fixed OPV, conflicting factory figures, no EU E24 gauge reading.</p></div></li>
+      <li id="S7"><span class="src-id">S7</span><div>
+        <a class="src-title" href="https://espressomanual.com/gaggia/classic-e24/thermostats-and-thermal-fuse/">Espresso Manual: E24 thermostats and thermal fuse</a>
+        <span class="src-meta"><span class="src-type">Guide</span>opened 28 Oct 2026</span>
+        <p class="src-note">Supports: Brass boiler on E24, 184 °C fuse is a retailer figure, never bridge a fuse.</p></div></li>
+      <li id="S8"><span class="src-id">S8</span><div>
+        <a class="src-title" href="https://www.bluestarcoffee.eu/en/Technical-drawing-for-Gaggia-Classic-Pro/cc-55.aspx">Bluestar Coffee: Gaggia Classic Pro technical drawing / parts</a>
+        <span class="src-meta"><span class="src-type">Retailer</span>opened 28 Oct 2026</span>
+        <p class="src-note">Supports: 107 °C brew, 145 °C steam thermostats, 184 °C fuse, Ulka EP5 230 V pump. Read via search index; the site blocks automated fetches (403), so treat as reported.</p></div></li>
+      <li id="S9"><span class="src-id">S9</span><div>
+        <a class="src-title" href="https://www.shadesofcoffee.co.uk/brew-and-steam-thermostats">Shades of Coffee: brew and steam thermostats</a>
+        <span class="src-meta"><span class="src-type">Retailer</span>opened 28 Oct 2026</span>
+        <p class="src-note">Supports: 107 °C / 145 °C standard, 155 °C upgrade.</p></div></li>
+      <li id="S10"><span class="src-id">S10</span><div>
+        <a class="src-title" href="https://docs.gaggimate.eu/docs/pinout/">GaggiMate docs: Pinout</a>
+        <span class="src-meta"><span class="src-type">Docs</span>opened 28 Oct 2026</span>
+        <p class="src-note">Supports: Board connector positions (referenced by the install guide).</p></div></li>
+      <li id="S11"><span class="src-id">S11</span><div>
+        <a class="src-title" href="https://en.wikipedia.org/wiki/PID_controller">Wikipedia: PID controller</a>
+        <span class="src-meta"><span class="src-type">Wiki</span>opened 28 Oct 2026</span>
+        <p class="src-note">Supports: Glossary: PID.</p></div></li>
+      <li id="S12"><span class="src-id">S12</span><div>
+        <a class="src-title" href="https://en.wikipedia.org/wiki/Solid-state_relay">Wikipedia: Solid-state relay</a>
+        <span class="src-meta"><span class="src-type">Wiki</span>opened 28 Oct 2026</span>
+        <p class="src-note">Supports: Glossary: SSR.</p></div></li>
+      <li id="S13"><span class="src-id">S13</span><div>
+        <a class="src-title" href="https://en.wikipedia.org/wiki/Thermocouple">Wikipedia: Thermocouple</a>
+        <span class="src-meta"><span class="src-type">Wiki</span>opened 28 Oct 2026</span>
+        <p class="src-note">Supports: Glossary: thermocouple.</p></div></li>
+      <li id="S14"><span class="src-id">S14</span><div>
+        <a class="src-title" href="https://en.wikipedia.org/wiki/Seebeck_effect">Wikipedia: Thermoelectric effect (Seebeck)</a>
+        <span class="src-meta"><span class="src-type">Wiki</span>opened 28 Oct 2026</span>
+        <p class="src-note">Supports: Glossary: Seebeck effect.</p></div></li>
+      <li id="S15"><span class="src-id">S15</span><div>
+        <a class="src-title" href="https://en.wikipedia.org/wiki/Solenoid_valve">Wikipedia: Solenoid valve</a>
+        <span class="src-meta"><span class="src-type">Wiki</span>opened 28 Oct 2026</span>
+        <p class="src-note">Supports: Glossary: solenoid, three-way valve.</p></div></li>
+      <li id="S16"><span class="src-id">S16</span><div>
+        <a class="src-title" href="https://en.wikipedia.org/wiki/Pressure_sensor">Wikipedia: Pressure sensor</a>
+        <span class="src-meta"><span class="src-type">Wiki</span>opened 28 Oct 2026</span>
+        <p class="src-note">Supports: Glossary: transducer.</p></div></li>
+      <li id="S17"><span class="src-id">S17</span><div>
+        <a class="src-title" href="https://en.wikipedia.org/wiki/Hysteresis">Wikipedia: Hysteresis</a>
+        <span class="src-meta"><span class="src-type">Wiki</span>opened 28 Oct 2026</span>
+        <p class="src-note">Supports: Glossary: hysteresis.</p></div></li>
+      <li id="S18"><span class="src-id">S18</span><div>
+        <a class="src-title" href="https://en.wikipedia.org/wiki/Duty_cycle">Wikipedia: Duty cycle</a>
+        <span class="src-meta"><span class="src-type">Wiki</span>opened 28 Oct 2026</span>
+        <p class="src-note">Supports: Glossary: duty cycle.</p></div></li>
+      <li id="S19"><span class="src-id">S19</span><div>
+        <a class="src-title" href="https://en.wikipedia.org/wiki/Bang%E2%80%93bang_control">Wikipedia: Bang–bang control</a>
+        <span class="src-meta"><span class="src-type">Wiki</span>opened 28 Oct 2026</span>
+        <p class="src-note">Supports: Glossary: thermostat as on/off control.</p></div></li>
+      <li id="S20"><span class="src-id">S20</span><div>
+        <a class="src-title" href="https://rnaidenov.github.io/deep-dive-briefings/espresso/">Deep Dive: Espresso, from the puck up</a>
+        <span class="src-meta"><span class="src-type">Briefing</span>opened 28 Oct 2026</span>
+        <p class="src-note">Supports: EY maths, temperature, preinfusion, puck prep.</p></div></li>
+      <li id="S21"><span class="src-id">S21</span><div>
+        <a class="src-title" href="https://en.wikipedia.org/wiki/Specific_heat_capacity">Wikipedia: Specific heat capacity</a>
+        <span class="src-meta"><span class="src-type">Wiki</span>opened 28 Oct 2026</span>
+        <p class="src-note">Supports: Water ≈ 4.18 J/(g·°C).</p></div></li>
+      <li id="S22"><span class="src-id">S22</span><div>
+        <a class="src-title" href="https://gaggimate-companion.vercel.app">GaggiMate companion walkthrough (Claude-y)</a>
+        <span class="src-meta"><span class="src-type">Tool</span>opened 28 Oct 2026</span>
+        <p class="src-note">Supports: Interactive tour, 240 V Eco defaults. Unofficial.</p></div></li>
+      <li id="S23"><span class="src-id">S23</span><div>
+        <a class="src-title" href="https://github.com/jniebuhr/gaggimate">GaggiMate on GitHub (jniebuhr/gaggimate)</a>
+        <span class="src-meta"><span class="src-type">Code</span>opened 28 Oct 2026</span>
+        <p class="src-note">Supports: Open-source firmware and hardware.</p></div></li>
+    </ol>
+  </div>
+</section>
+
+<footer class="footer"><div class="wrap">
+  Narration: synthetic voice (en-GB Ryan). Wiring images © GaggiMate docs, used for education with credit. Educational only: not an install guide, not advice to modify your machine. · <a href="../">All briefings</a>
+</div></footer>
+</main>
+
+<!-- ============ AUDIO PLAYER ============ -->
+<!-- Put audio.mp3 next to this index.html. The <audio> inside is the no-JS fallback. -->
+<div class="player" data-audio="audio.mp3" data-title="Inside the Gaggia Classic Pro" data-artist="Deep Dive" data-album="Deep Dive briefings">
+  <audio controls preload="metadata" src="audio.mp3"><a href="audio.mp3">Download the narration (MP3)</a></audio>
+</div>
+
+<!-- Kit scripts (same loader as in <head>). -->
+<script>['svg', 'chart', 'steps', 'audio', 'glossary'].forEach(function (f) { document.write('<script src="' + KIT + f + '.js"><\/script>'); });</script>
+
+<script>
+(function () {
+  // Hydraulic mode toggle
+  var hy = document.getElementById('hydro');
+  document.querySelectorAll('[data-hmode]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      hy.setAttribute('class', 'hydro ' + b.getAttribute('data-hmode'));
+      document.querySelectorAll('[data-hmode]').forEach(function (o) { o.setAttribute('aria-pressed', o === b); });
+    });
+  });
+  // Electrical state machine: which wires/parts are live in each state
+  var STATES = [
+    { on: ['w-main','w-ret','w-heat','p-fuse','p-st','p-bt','p-heat'], note: 'Heat-up: power on, boiler cold. Both thermostats are closed, so current flows straight through them and the heater runs at full power. The lamps are shorted out and stay dark.' },
+    { on: ['w-main','w-ret','p-fuse','p-st','l-brew'], note: 'Brew ready: the brew thermostat has opened. Current now has to pass through the brew lamp, which has far more resistance than the heater, so the lamp lights and the heater gets almost nothing. It cools, the thermostat closes, and the cycle repeats.' },
+    { on: ['w-main','w-ret','p-fuse','p-st','l-brew','w-pump','w-valve','p-bsw','p-pump','p-valve'], note: 'Brewing: the brew switch powers the pump and the three-way valve together, one switch for both. The heater keeps cycling on the brew thermostat in the background.' },
+    { on: ['w-main','w-ret','w-heat','w-bypass','p-fuse','p-st','p-ssw','p-heat'], note: 'Steam heat-up: the steam switch bypasses the brew thermostat and its lamp. The heater runs until the steam thermostat (145 °C) opens.' },
+    { on: ['w-main','w-ret','w-bypass','p-fuse','p-ssw','l-steam'], note: 'Steam ready: the steam thermostat opens, the steam lamp lights, the heater effectively stops, and it cycles. Opening the steam knob changes nothing electrically.' }
+  ];
+  function setState(i) {
+    document.querySelectorAll('#elec .on').forEach(function (e) { e.classList.remove('on'); });
+    STATES[i].on.forEach(function (id) { var e = document.getElementById(id); if (e) e.classList.add('on'); });
+    document.getElementById('elec-note').textContent = STATES[i].note;
+    document.querySelectorAll('[data-st]').forEach(function (o) { o.setAttribute('aria-pressed', o.getAttribute('data-st') == i); });
+  }
+  document.querySelectorAll('[data-st]').forEach(function (b) { b.addEventListener('click', function () { setState(+b.getAttribute('data-st')); }); });
+  setState(0);
+
+  // Illustrative temperature shapes: thermostat saw-tooth vs PID settle
+  var S = Kit.svg, host = document.getElementById('tempchart');
+  var W = 600, H = 250, svg = S.create(host, { viewBox: '0 0 ' + W + ' ' + H, label: 'Illustrative temperature over time: thermostat saw-tooth versus PID settling flat' });
+  var L = 40, B = 210, T = 30;
+  S.line(svg, L, B, W - 10, B, { stroke: 'var(--line)', strokeWidth: 2 });
+  S.line(svg, L, T, L, B, { stroke: 'var(--line)', strokeWidth: 2 });
+  S.text(svg, W - 10, B + 24, 'time →', { anchor: 'end', 'font-size': 13 });
+  S.text(svg, L - 6, T - 8, 'temp', { 'font-size': 13 });
+  S.line(svg, L, 95, W - 10, 95, { stroke: 'var(--muted)', strokeWidth: 1, 'stroke-dasharray': '4 6' });
+  S.text(svg, W - 12, 88, 'target', { anchor: 'end', 'font-size': 12 });
+  function pts(f) { var d = ''; for (var x = 0; x <= 1.0001; x += 0.005) d += (d ? 'L' : 'M') + (L + x * (W - 50)).toFixed(1) + ' ' + f(x).toFixed(1); return d; }
+  var thermo = pts(function (x) { if (x < 0.25) return B - (B - 75) * (x / 0.25); var p = ((x - 0.25) / 0.15) % 1; return p < 0.35 ? 75 + 50 * (p / 0.35) : 125 - 50 * ((p - 0.35) / 0.65); });
+  var pid = pts(function (x) { var k = Math.min(x / 0.32, 1); return B - (B - 95) * (1 - Math.pow(1 - k, 3)); });
+  var a = S.path(svg, thermo, { stroke: 'var(--coral)', strokeWidth: 3, fill: 'none' });
+  var b = S.path(svg, pid, { stroke: 'var(--sky)', strokeWidth: 3, fill: 'none' });
+  S.rect(svg, L + 10, 4, 14, 14, { fill: 'var(--coral)', rx: 3 }); S.text(svg, L + 30, 16, 'Thermostat (on/off)', { 'font-size': 13 });
+  S.rect(svg, L + 200, 4, 14, 14, { fill: 'var(--sky)', rx: 3 }); S.text(svg, L + 220, 16, 'PID + SSR', { 'font-size': 13 });
+  Kit.steps.on('limits', function () { S.draw([a, b], { stagger: 300 }); });
+})();
+</script>
+</body>
+</html>
