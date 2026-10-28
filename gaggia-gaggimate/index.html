@@ -89,7 +89,7 @@
   <div class="wrap">
     <span class="kicker">Your open machine</span>
     <h2>Tour this photo</h2>
-    <p class="lede">Rado's own photo of an open E24-class Classic Pro, top-down with the cup warmer off. Front (switches) is on the left. Tap a number.</p>
+    <p class="lede">Rado's own photo of an open E24-class Classic Pro, top-down with the cup warmer off. Rotated so the front (switches) faces down, toward you. Tap a number, or step through how current and water flow.</p>
     <style>
       .machine-map{position:relative;max-width:520px;margin:0 auto}
       .machine-map img{width:100%;height:auto;display:block;border-radius:12px}
@@ -99,10 +99,27 @@
       .mm-panel h3{margin:0 0 6px}
       @media (min-width:900px){.mm-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}.mm-panel{margin:0;position:sticky;top:80px}}
       @media (prefers-reduced-motion:no-preference){.machine-map .hs{transition:transform .15s}}
+      .machine-map svg.flow{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+      .flow path{fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:3 2;opacity:.95}
+      .flow .pw{stroke:#ffcc33}.flow .wt{stroke:#4fc3ff}.flow .gm{stroke:#7CFF8a}
+      @media (prefers-reduced-motion:no-preference){.flow path{animation:fl 1s linear infinite}@keyframes fl{to{stroke-dashoffset:-5}}}
+      .machine-map .hs.on{background:#e8a317;border-style:solid;box-shadow:0 0 0 4px rgba(255,204,51,.55)}
+      .machine-map .hs.dim{opacity:.35}
+      .flow-steps{display:flex;flex-wrap:wrap;gap:6px;margin:0 auto 10px;max-width:520px}
+      .flow-steps button{min-height:40px;padding:6px 10px;border-radius:20px;border:1px solid var(--line,#ccc);background:transparent;color:inherit;font:600 14px system-ui;cursor:pointer}
+      .flow-steps button[aria-pressed="true"]{background:var(--coral,#e66);color:#fff;border-color:transparent}
+      .flow-cap{max-width:520px;margin:0 auto 10px;font-size:15px}
+      .flow-key{font-size:13px;opacity:.85}.flow-key i{display:inline-block;width:18px;height:4px;border-radius:2px;margin:0 4px 2px 8px;vertical-align:middle}
+      .qa-callout{max-width:720px;margin:20px auto 0;padding:14px 16px;border-left:4px solid var(--coral,#e66);border-radius:8px;background:rgba(127,127,127,.08)}
     </style>
+    <div class="js-only">
+      <div class="flow-steps" role="group" aria-label="Current flow step" id="flow-steps"></div>
+      <p class="flow-cap" id="flow-cap" aria-live="polite"></p>
+      <p class="flow-key" style="max-width:520px;margin:0 auto 10px">Key:<i style="background:#ffcc33"></i>mains current<i style="background:#4fc3ff"></i>water<i style="background:#7CFF8a"></i>GaggiMate-driven. Lines join hotspots and are schematic, not exact wire runs.</p>
+    </div>
     <div class="mm-grid">
       <figure style="margin:0">
-        <div class="machine-map" id="mmap"><img src="open-machine-web.jpg" width="1200" height="1600" alt="Top-down photo of an open Gaggia Classic Pro: switches on the left, brass boiler, steam valve, pump and wiring"></div>
+        <div class="machine-map" id="mmap"><img src="open-machine-web.jpg" width="1600" height="1200" alt="Top-down photo of an open Gaggia Classic Pro: switches at the bottom, brass boiler, steam valve, pump and wiring"></div>
         <figcaption>Photo: an open E24-class Classic Pro (Rado's machine). Hotspots are approximate.</figcaption>
       </figure>
       <div class="mm-panel js-only" id="mm-panel" aria-live="polite"><p>Tap a number on the photo.</p></div>
@@ -118,6 +135,33 @@
       <li><b>Wiring loom.</b> The bundled, zip-tied wires carry mains between switches, thermostats, heater, pump and valve.</li>
       <li><b>Red sleeved wires (likely heater feed).</b> Red woven sleeving is heat-resistant insulation, used on wires that run close to the hot boiler.</li>
     </ol>
+    <h3 class="no-js">How current and water flow, step by step</h3>
+    <ol class="no-js" id="flow-list">
+      <li><b>A. Plugged in, all off.</b> Mains sits at the power switch (left). Nothing else is live.</li>
+      <li><b>B. Power on.</b> Current runs through the loom to the boiler heater via the brew thermostat and the thermal fuse; the thermostat clicks the heater on and off around brew temperature.</li>
+      <li><b>C. Brew switch (C, middle) on.</b> The same switch powers the pump and the three-way valve together. Water: tank → clear tube → pump → boiler → group.</li>
+      <li><b>D. Steam switch (S, right) on.</b> The heater now answers to the steam thermostat, so the boiler climbs to steam temperature; the knob opens the steam valve to the wand.</li>
+      <li><b>E. With GaggiMate.</b> The switches become inputs to the board. The board drives the heater through an SSR (thermocouple feedback) and the pump and valve on separate wires.</li>
+    </ol>
+    <div class="qa-callout" id="jumper">
+      <h3 style="margin-top:0">What the white steam jumper actually does</h3>
+      <p><b>A <dfn class="term">jumper</dfn></b> is just a short wire that ties two terminals together, so they become the same electrical point.</p>
+      <p><b><dfn class="term">Line</dfn> and <dfn class="term">Neutral</dfn>.</b> Mains in Bulgaria is 230 V. Line is the "hot" side that pushes current out; Neutral is the return path back. A heater, pump or lamp only runs when it is connected to both sides, so current can go out through it and come back.</p>
+      <p><b>A rocker switch</b> is a gate. Open means there's a gap and no current flows; closed means there's a path. On the Gaggia, each rocker also has terminals that feed its little indicator lamp.</p>
+      <p><b>Why the factory "double white" exists.</b> An indicator lamp needs both Line and Neutral too. In the stock layout, the white jumper on the steam monoblock carries Neutral from one pin to another, so the steam switch and its lamp circuit get the return path Gaggia designed in. <em>Simplified:</em> the exact lamp wiring differs by model and market; Comori Coffee's walkthrough and the official diagram show the full picture. <a class="cite" href="#S4">S4</a></p>
+      <p><b>Why GaggiMate moves S.5.</b> The GaggiMate board needs its own Neutral connection to run. The white wire at S.5 is the Neutral-side connection on the steam switch, so the guide has you take it off and extend it to the board's Neutral with the blue kit wire. S.2 can also be white, so go by position, not colour. <a href="https://docs.gaggimate.eu/docs/installation-gcp/" target="_blank" rel="noopener">Official install guide</a>.</p>
+      <p style="font-size:14px;opacity:.85">Always unplug before touching anything inside.</p>
+    </div>
+    <aside class="qa-callout">
+      <h3 style="margin-top:0">Install notes from your questions</h3>
+      <ul>
+        <li><b>C = Coffee</b> (middle switch), <b>S = Steam</b> (right). Power is the left switch and has no C/S labels. The letters aren't colours.</li>
+        <li><b>Label by position, not wire colour.</b> Colours vary by market; S.5 and S.2 can both be white.</li>
+        <li>The factory <b>"double white" jumper</b> on the steam monoblock is on the <b>S.5</b> side (EU machines; the docs note US machines differ). GaggiMate later extends S.5 to the board's Neutral, so don't mix it up with S.2.</li>
+        <li><b>Tilt, don't yank.</b> Tilting the switches about 1–2 cm frees the monoblocks for labeling. Pushing pins out happens in a later step.</li>
+      </ul>
+      <p>Follow the <a href="https://docs.gaggimate.eu/docs/installation-gcp/" target="_blank" rel="noopener">official GaggiMate install guide</a> and its <a href="https://docs.gaggimate.eu/downloads/gcp-wiring-labels.pdf" target="_blank" rel="noopener">printable labels</a> for the actual wiring. Unplug before opening.</p>
+    </aside>
   </div>
 </section>
 
@@ -589,15 +633,15 @@
 <script>
 (function () {
   var P = [
-    { x: 10, y: 54, t: 'Power, brew and steam switches', b: 'The three rockers on the front panel, seen from behind. Mains comes in through power; brew sends power to the pump and the <dfn class="term">three-way valve</dfn> at the same time; steam bypasses the brew <dfn class="term">thermostat</dfn> so the boiler climbs to steam temperature.', c: 'Power: mains in, out to heater circuit. Signal: none, they are plain switches.', g: 'GaggiMate taps the brew and steam switches as inputs, so the board decides what the pump and valve do.' },
-    { x: 30, y: 57, t: 'Boiler and brass fittings (region)', b: 'The <dfn class="term">boiler</dfn> sits under this area, partly hidden by wires; the brass parts visible here are fittings on and around it. A heating element cast into it warms the water; thermostats on it switch the heater on and off.', c: 'Water: from pump, out to the group head and steam valve. Power: heater element, via thermostats and the <dfn class="term">thermal fuse</dfn>.', g: 'GaggiMate replaces the brew thermostat with a <dfn class="term">thermocouple</dfn> and drives the heater through an <dfn class="term">SSR</dfn>.' },
-    { x: 28, y: 64, t: 'Steam valve body (silver T)', b: 'The steel T-fitting and pipe is the steam/hot-water valve. Turning the knob opens a path from the boiler to the wand.', c: 'Water/steam: boiler → valve → wand. No electrical link.', g: 'Unchanged by GaggiMate.' },
-    { x: 26, y: 73, t: 'Steam knob', b: 'The black knob that opens the steam valve. It is purely mechanical.', c: 'Mechanical only.', g: '' },
-    { x: 50, y: 61, t: 'Clear silicone tube', b: 'Low-pressure tubing between the water tank and the pump side of the machine (tank feed and/or <dfn class="term">OPV</dfn> return). It runs down to the tank well.', c: 'Water: tank ↔ pump / OPV return. Low pressure only.', g: 'GaggiMate Pro adds a pressure sensor on the high-pressure side, not here.' },
-    { x: 64, y: 50, t: 'Vibratory pump (region)', b: 'The <dfn class="term">vibratory pump</dfn> sits on the right, mostly hidden under the black mount and wires. A coil shakes a piston back and forth to push water up to about 9–15 bar.', c: 'Water: tank in, out to boiler (via the OPV path). Power: from the brew switch (stock).', g: 'GaggiMate gives the pump its own wire from the board so it can run separately from the valve, e.g. for <dfn class="term">preinfusion</dfn>.' },
-    { x: 46, y: 24, t: 'Loose earth wires (yellow-green)', b: 'Yellow-green is always protective earth. These hang free because the cup-warmer lid was removed; they bond the lid/chassis to earth.', c: 'Power: safety earth to chassis.', g: 'Safety: reconnect them before closing the case and before plugging in.' },
-    { x: 58, y: 36, t: 'Wiring loom', b: 'The bundled, zip-tied wires carry mains between switches, thermostats, heater, pump and valve. Colours aren\u2019t a reliable guide; follow the official diagram.', c: 'Power: everything electrical. No low-voltage signal on a stock machine.', g: 'This is where GaggiMate\u2019s harness slots in; see the wiring section.' },
-    { x: 43, y: 47, t: 'Red sleeved wires (likely heater feed)', b: 'Red woven sleeving is heat-resistant insulation, used on wires that run close to the hot boiler. Likely the heater/thermostat feed; check against the diagram.', c: 'Power: to the boiler area.', g: '' }
+    { x: 54, y: 90, t: 'Power, brew and steam switches', b: 'The three rockers on the front panel, seen from behind. Mains comes in through power; brew sends power to the pump and the <dfn class="term">three-way valve</dfn> at the same time; steam bypasses the brew <dfn class="term">thermostat</dfn> so the boiler climbs to steam temperature.', c: 'Power: mains in, out to heater circuit. Signal: none, they are plain switches.', g: 'GaggiMate taps the brew and steam switches as inputs, so the board decides what the pump and valve do.' },
+    { x: 57, y: 70, t: 'Boiler and brass fittings (region)', b: 'The <dfn class="term">boiler</dfn> sits under this area, partly hidden by wires; the brass parts visible here are fittings on and around it. A heating element cast into it warms the water; thermostats on it switch the heater on and off.', c: 'Water: from pump, out to the group head and steam valve. Power: heater element, via thermostats and the <dfn class="term">thermal fuse</dfn>.', g: 'GaggiMate replaces the brew thermostat with a <dfn class="term">thermocouple</dfn> and drives the heater through an <dfn class="term">SSR</dfn>.' },
+    { x: 64, y: 72, t: 'Steam valve body (silver T)', b: 'The steel T-fitting and pipe is the steam/hot-water valve. Turning the knob opens a path from the boiler to the wand.', c: 'Water/steam: boiler → valve → wand. No electrical link.', g: 'Unchanged by GaggiMate.' },
+    { x: 73, y: 74, t: 'Steam knob', b: 'The black knob that opens the steam valve. It is purely mechanical.', c: 'Mechanical only.', g: '' },
+    { x: 61, y: 50, t: 'Clear silicone tube', b: 'Low-pressure tubing between the water tank and the pump side of the machine (tank feed and/or <dfn class="term">OPV</dfn> return). It runs down to the tank well.', c: 'Water: tank ↔ pump / OPV return. Low pressure only.', g: 'GaggiMate Pro adds a pressure sensor on the high-pressure side, not here.' },
+    { x: 50, y: 36, t: 'Vibratory pump (region)', b: 'The <dfn class="term">vibratory pump</dfn> sits on the right, mostly hidden under the black mount and wires. A coil shakes a piston back and forth to push water up to about 9–15 bar.', c: 'Water: tank in, out to boiler (via the OPV path). Power: from the brew switch (stock).', g: 'GaggiMate gives the pump its own wire from the board so it can run separately from the valve, e.g. for <dfn class="term">preinfusion</dfn>.' },
+    { x: 24, y: 54, t: 'Loose earth wires (yellow-green)', b: 'Yellow-green is always protective earth. These hang free because the cup-warmer lid was removed; they bond the lid/chassis to earth.', c: 'Power: safety earth to chassis.', g: 'Safety: reconnect them before closing the case and before plugging in.' },
+    { x: 36, y: 42, t: 'Wiring loom', b: 'The bundled, zip-tied wires carry mains between switches, thermostats, heater, pump and valve. Colours aren\u2019t a reliable guide; follow the official diagram.', c: 'Power: everything electrical. No low-voltage signal on a stock machine.', g: 'This is where GaggiMate\u2019s harness slots in; see the wiring section.' },
+    { x: 47, y: 57, t: 'Red sleeved wires (likely heater feed)', b: 'Red woven sleeving is heat-resistant insulation, used on wires that run close to the hot boiler. Likely the heater/thermostat feed; check against the diagram.', c: 'Power: to the boiler area.', g: '' }
   ];
   var map = document.getElementById('mmap'), panel = document.getElementById('mm-panel'), list = document.getElementById('mm-list');
   P.forEach(function (p, i) {
@@ -612,6 +656,31 @@
     });
     map.appendChild(b);
   });
+  var hs = map.querySelectorAll('.hs'), NS = 'http://www.w3.org/2000/svg';
+  var svg = document.createElementNS(NS, 'svg'); svg.setAttribute('class', 'flow'); svg.setAttribute('viewBox', '0 0 100 100'); svg.setAttribute('preserveAspectRatio', 'none'); svg.setAttribute('aria-hidden', 'true');
+  map.insertBefore(svg, hs[0]);
+  var F = [
+    { k: 'A · Off', on: [0], lines: [], cap: '<b>A. Plugged in, all off.</b> Mains waits at the power switch (left rocker, #1). Nothing downstream is live.' },
+    { k: 'B · Power on', on: [0, 7, 8, 1], lines: [['pw', [0, 7, 8, 1]]], cap: '<b>B. Power on.</b> Current leaves the switches (#1), runs through the loom (#8) and the red heat-sleeved leads (#9) to the boiler heater (#2), via the brew thermostat and thermal fuse. The thermostat clicks it on and off.' },
+    { k: 'C · Brew', on: [0, 7, 5, 4, 1], lines: [['pw', [0, 7, 5]], ['wt', [4, 5, 1]]], cap: '<b>C. Brew switch on (C, middle).</b> One switch powers the pump (#6) and the three-way valve together. Water: tank → clear tube (#5) → pump → boiler (#2) → group. The valve sits out of shot.' },
+    { k: 'D · Steam', on: [0, 7, 8, 1, 2, 3], lines: [['pw', [0, 7, 8, 1]], ['wt', [1, 2, 3]]], cap: '<b>D. Steam switch on (S, right).</b> The heater now answers to the steam thermostat, so the boiler (#2) climbs to steam temperature. Turning the knob (#4) opens the valve (#3) to the wand; that part is mechanical.' },
+    { k: 'E · GaggiMate', on: [0, 7, 8, 1, 5], lines: [['gm', [0, 7]], ['gm', [7, 8, 1]], ['gm', [7, 5]]], cap: '<b>E. With GaggiMate.</b> The switches (#1) become inputs to the board. The board drives the heater through an <dfn class="term">SSR</dfn> using <dfn class="term">thermocouple</dfn> feedback, and the pump (#6) and valve on separate wires, so it can do preinfusion and profiles.' }
+  ];
+  var bar = document.getElementById('flow-steps'), cap = document.getElementById('flow-cap');
+  function show(n) {
+    var f = F[n]; svg.innerHTML = '';
+    f.lines.forEach(function (l) {
+      var d = l[1].map(function (i, j) { return (j ? 'L' : 'M') + P[i].x + ' ' + P[i].y; }).join(' ');
+      var p = document.createElementNS(NS, 'path'); p.setAttribute('d', d); p.setAttribute('class', l[0]); p.setAttribute('vector-effect', 'non-scaling-stroke'); p.style.strokeWidth = '5'; svg.appendChild(p);
+    });
+    hs.forEach(function (h, i) { var on = f.on.indexOf(i) > -1; h.classList.toggle('on', on); h.classList.toggle('dim', !on); });
+    bar.querySelectorAll('button').forEach(function (b, i) { b.setAttribute('aria-pressed', i === n); });
+    cap.innerHTML = f.cap; if (window.Kit && Kit.glossary && Kit.glossary.scan) Kit.glossary.scan(cap);
+  }
+  F.forEach(function (f, i) { var b = document.createElement('button'); b.type = 'button'; b.textContent = f.k; b.addEventListener('click', function () { show(i); }); bar.appendChild(b); });
+  var all = document.createElement('button'); all.type = 'button'; all.textContent = 'Parts only';
+  all.addEventListener('click', function () { svg.innerHTML = ''; hs.forEach(function (h) { h.classList.remove('on', 'dim'); }); bar.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-pressed', b === all); }); cap.textContent = 'Tap a number for what each part is.'; });
+  bar.appendChild(all); all.click();
 })();
 </script>
 </body>
