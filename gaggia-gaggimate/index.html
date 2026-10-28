@@ -107,7 +107,17 @@
       </figure>
       <div class="mm-panel js-only" id="mm-panel" aria-live="polite"><p>Tap a number on the photo.</p></div>
     </div>
-    <ol class="no-js" id="mm-list"></ol>
+    <ol class="no-js" id="mm-list">
+      <li><b>Power, brew and steam switches.</b> The three rockers on the front panel, seen from behind.</li>
+      <li><b>Boiler and brass fittings (region).</b> The <dfn class="term">boiler</dfn> sits under this area, partly hidden by wires; the brass parts visible here are fittings on and around it.</li>
+      <li><b>Steam valve body (silver T).</b> The steel T-fitting and pipe is the steam/hot-water valve.</li>
+      <li><b>Steam knob.</b> The black knob that opens the steam valve.</li>
+      <li><b>Clear silicone tube.</b> Low-pressure tubing between the water tank and the pump side of the machine (tank feed and/or <dfn class="term">OPV</dfn> return).</li>
+      <li><b>Vibratory pump (region).</b> The <dfn class="term">vibratory pump</dfn> sits on the right, mostly hidden under the black mount and wires.</li>
+      <li><b>Loose earth wires (yellow-green).</b> Yellow-green is always protective earth.</li>
+      <li><b>Wiring loom.</b> The bundled, zip-tied wires carry mains between switches, thermostats, heater, pump and valve.</li>
+      <li><b>Red sleeved wires (likely heater feed).</b> Red woven sleeving is heat-resistant insulation, used on wires that run close to the hot boiler.</li>
+    </ol>
   </div>
 </section>
 
@@ -591,7 +601,6 @@
   ];
   var map = document.getElementById('mmap'), panel = document.getElementById('mm-panel'), list = document.getElementById('mm-list');
   P.forEach(function (p, i) {
-    var li = document.createElement('li'); li.innerHTML = '<b>' + p.t + '.</b> ' + p.b + ' <i>' + p.c + '</i>'; list.appendChild(li);
     var b = document.createElement('button'); b.type = 'button'; b.className = 'hs'; b.textContent = i + 1;
     b.style.left = p.x + '%'; b.style.top = p.y + '%';
     b.setAttribute('aria-pressed', 'false'); b.setAttribute('aria-label', (i + 1) + ': ' + p.t);
