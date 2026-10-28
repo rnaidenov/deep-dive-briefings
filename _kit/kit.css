@@ -277,6 +277,11 @@ dfn.term.is-ready:hover,dfn.term.is-open{text-decoration-color:currentColor;back
 .gl-bg{margin-top:6px;color:var(--tm)}
 .gl-lang{display:inline-block;font:700 .62rem/1.5 var(--sans);letter-spacing:.07em;padding:0 6px;margin-right:6px;border-radius:var(--r-pill);background:color-mix(in srgb,var(--tt) 14%,transparent);color:var(--tt);vertical-align:1px}
 .gl-bg-text{color:var(--tt);font-weight:700}
+.gl-links{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center}
+.gl-links[hidden]{display:none}
+.gl-links a{display:inline-flex;align-items:center;gap:4px;font:700 .72rem/1.2 var(--sans);letter-spacing:.02em;padding:4px 8px;border-radius:var(--r-pill);text-decoration:none;color:var(--tt);background:color-mix(in srgb,var(--tt) 12%,transparent);border:1px solid color-mix(in srgb,var(--tt) 22%,transparent)}
+.gl-links a:hover,.gl-links a:focus-visible{background:color-mix(in srgb,var(--tk) 28%,transparent);border-color:color-mix(in srgb,var(--tk) 55%,transparent);outline:none}
+.gl-links a.gl-short::before{content:"▶";font-size:.65rem;opacity:.85}
 .gl-tip>.gl-arrow{position:absolute;left:var(--ax,50%);width:12px;height:12px;margin-left:-6px;background:var(--tb);transform:rotate(45deg);border-radius:2px}
 .gl-tip[data-side=above]>.gl-arrow{bottom:-5px}
 .gl-tip[data-side=below]>.gl-arrow{top:-5px}

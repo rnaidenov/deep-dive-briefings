@@ -9,7 +9,7 @@ _kit/
   chart.js       slider-bound SVG line chart: Kit.chart(el, opts) or <div data-chart>
   svg.js         SVG diagram helpers: Kit.svg.create/line/rect/circle/text/arrow/path/group/draw/pop
   audio.js       sticky audio player + lock-screen MediaSession controls: <div data-audio>
-  glossary.js    inline term popups (English explainer + Bulgarian): <dfn class="term">, optional glossary.json
+  glossary.js    inline term popups (English + Bulgarian, optional Wikipedia/Learn more + YouTube Shorts): <dfn class="term">, optional glossary.json
   mindmap.js     interactive radial mind map for book notes: <div data-mindmap="mindmap.json">
   fonts/         Inter 400/700, Fraunces 700 + 400 italic (woff2, self-hosted)
   template/      complete example page (also a live preview at /_kit/template/) + example glossary.json
@@ -78,14 +78,14 @@ The `<noscript>` stylesheet uses `../_kit/kit.css`, which is right for topic pag
 | Learning path | `<ol class="path"><li class="path-step" data-level="start|next|deep|expert" data-n="1">` |
 | Draw-on stroke (static SVG) | `data-draw` on a `<path>`/`<line>` |
 | Accent colour | `:root { --accent: var(--mint) }` |
-| Glossary term | `<dfn class="term" data-en="Plain explainer" data-bg="превод">word</dfn>`; `data-term="key"` if the text differs |
+| Glossary term | `<dfn class="term" data-en="Plain explainer" data-bg="превод">word</dfn>`; optional `data-wiki` / `data-shorts`; `data-term="key"` if the text differs |
 | Glossary file | `<body data-glossary="glossary.json">` |
 | Only with JS / only without | `class="js-only"` / `class="no-js"` |
 | Mind map (book notes) | `<div data-mindmap="mindmap.json">` + a `.no-js` outline inside; add `'mindmap'` to the loader's script list |
 
 ## Glossary (glossary.js)
 
-Mark jargon inline. The term gets a faint dotted underline, and a small popup shows the term, a 1–2 line plain-English explainer, and the Bulgarian translation.
+Mark jargon inline. The term gets a faint dotted underline, and a small popup shows the term, a 1–2 line plain-English explainer, the Bulgarian translation, and optional source links (Wikipedia / Learn more, plus up to two YouTube Shorts). Links open in a new tab — Shorts are chips, never iframes, so the popup stays compact on a 390px phone.
 
 ```html
 <dfn class="term" data-en="How hard the water is pushed through the coffee." data-bg="налягане">pressure</dfn>
@@ -93,11 +93,25 @@ Mark jargon inline. The term gets a faint dotted underline, and a small popup sh
 <dfn class="term" data-term="crema">the crema</dfn> <!-- lookup key differs from the text -->
 ```
 
-**glossary.json (optional).** Turn it on with `<body data-glossary="glossary.json">`. The path is relative to the page, so it lives at `<slug>/glossary.json`. Keys are terms, matched case-insensitively against `data-term` or the element's text. A value is `{ "en": "…", "bg": "…" }`, or just a string for `en`. The file only fills in `data-en`/`data-bg` that the markup leaves out, so inline attributes always win. A term with neither attribute stays plain text with no popup. If the file fails to load, the console shows a warning and the inline attributes still work.
+Inline attrs (optional): `data-wiki="https://…"` and `data-shorts="url1,url2"` (comma-separated, max two used).
+
+**glossary.json (optional).** Turn it on with `<body data-glossary="glossary.json">`. The path is relative to the page, so it lives at `<slug>/glossary.json`. Keys are terms, matched case-insensitively against `data-term` or the element's text. A value is `{ "en": "…", "bg": "…", "wiki": "https://…", "shorts": ["https://…", "https://…"] }`, or just a string for `en`. `shorts` may also be one string. The file only fills in attributes the markup leaves out (`data-en` / `data-bg` / `data-wiki` / `data-shorts`), so inline attributes always win. A term with neither `en` nor `bg` stays plain text with no popup. If the file fails to load, the console shows a warning and the inline attributes still work.
 
 ```json
-{ "pressure": { "en": "How hard the water is pushed through the coffee.", "bg": "налягане" } }
+{
+  "pressure": {
+    "en": "How hard the water is pushed through the coffee.",
+    "bg": "налягане",
+    "wiki": "https://en.wikipedia.org/wiki/Pressure",
+    "shorts": [
+      "https://www.youtube.com/shorts/aqz-KE-bpKQ",
+      "https://www.youtube.com/shorts/jNQXAC9IVRw"
+    ]
+  }
+}
 ```
+
+In the popup: Wikipedia hosts get a **Wikipedia** chip; any other `wiki` URL gets **Learn more**. Shorts render as **Short 1** / **Short 2** play chips. Deep Dive picks the videos per topic — the kit does not curate them.
 
 **Behaviour.**
 - Mouse: opens on hover. You can move into the popup; clicking the term keeps it open.

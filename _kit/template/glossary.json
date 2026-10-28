@@ -1,15 +1,22 @@
 {
   "principal": {
     "en": "The money you start with, before any interest is added.",
-    "bg": "главница"
+    "bg": "главница",
+    "wiki": "https://en.wikipedia.org/wiki/Principal_(finance)"
   },
   "interest on interest": {
     "en": "Interest earned on interest from earlier years. This is what makes the curve bend upward.",
-    "bg": "лихва върху лихвата"
+    "bg": "лихва върху лихвата",
+    "wiki": "https://en.wikipedia.org/wiki/Compound_interest",
+    "shorts": [
+      "https://www.youtube.com/shorts/aqz-KE-bpKQ",
+      "https://www.youtube.com/shorts/jNQXAC9IVRw"
+    ]
   },
   "index fund": {
     "en": "A fund that simply buys every stock in a market index, so it is cheap to run.",
-    "bg": "индексен фонд"
+    "bg": "индексен фонд",
+    "wiki": "https://en.wikipedia.org/wiki/Index_fund"
   },
   "expense ratio": {
     "bg": "годишна такса за управление"

@@ -1,18 +1,30 @@
 /* Deep Dive kit · glossary.js
-   Inline glossary terms with a small popup: term, plain-English explainer, Bulgarian translation.
+   Inline glossary terms with a small popup: term, plain-English explainer, Bulgarian translation,
+   optional Wikipedia/Learn-more link, optional YouTube Shorts (open externally — no iframes).
    No dependencies.
 
    Markup:
      <dfn class="term" data-en="Plain-English explainer, 1–2 lines" data-bg="налягане">pressure</dfn>
      <dfn class="term" data-term="crema">the crema</dfn>    data-term: lookup key if it differs from the text
+     <dfn class="term" data-wiki="https://en.wikipedia.org/wiki/Pressure"
+          data-shorts="https://www.youtube.com/shorts/aaa,https://www.youtube.com/shorts/bbb">pressure</dfn>
      <body data-glossary="glossary.json">                   optional per-topic file (relative to the page)
 
    glossary.json, keyed by term (case-insensitive); it only fills attributes the markup leaves out:
-     { "pressure": { "en": "How hard the water is pushed through the coffee.", "bg": "налягане" } }
+     {
+       "pressure": {
+         "en": "How hard the water is pushed through the coffee.",
+         "bg": "налягане",
+         "wiki": "https://en.wikipedia.org/wiki/Pressure",
+         "shorts": ["https://www.youtube.com/shorts/…", "https://www.youtube.com/shorts/…"]
+       }
+     }
+   `shorts` may also be a single string or a comma-separated string.
 
    Behaviour: opens on mouse hover, on keyboard focus, and with Enter/Space; a tap toggles it on touch;
    tapping/clicking outside closes it; Esc closes it and returns focus to the term. One popup at a time.
    Terms with no explainer and no translation are left as plain text.
+   External links open in a new tab (target=_blank rel=noopener). Shorts are chips, not embeds.
 
    API: Kit.glossary.scan(root) (enhance terms inside root, e.g. content rendered later; .init(root) is the same
         and also runs the one-time setup if needed), .refresh() (scan the whole page), .open(el), .close(),
@@ -28,13 +40,45 @@
 
   function key(el) { return (el.getAttribute('data-term') || el.textContent).trim().replace(/\s+/g, ' ').toLowerCase(); }
 
-  // Fill missing data-en / data-bg from glossary.json.
+  function shortsAttr(v) {
+    if (v == null || v === '') return '';
+    if (Array.isArray(v)) return v.map(function (s) { return String(s).trim(); }).filter(Boolean).join(',');
+    return String(v).trim();
+  }
+
+  // Fill missing data-en / data-bg / data-wiki / data-shorts from glossary.json.
   function fill(el) {
     var d = data[key(el)];
     if (!d) return;
     if (typeof d === 'string') d = { en: d };
     if (d.en && !el.getAttribute('data-en')) el.setAttribute('data-en', d.en);
     if (d.bg && !el.getAttribute('data-bg')) el.setAttribute('data-bg', d.bg);
+    if (d.wiki && !el.getAttribute('data-wiki')) el.setAttribute('data-wiki', d.wiki);
+    var sh = shortsAttr(d.shorts);
+    if (sh && !el.getAttribute('data-shorts')) el.setAttribute('data-shorts', sh);
+  }
+
+  function parseShorts(attr) {
+    if (!attr) return [];
+    return attr.split(',').map(function (s) { return s.trim(); }).filter(Boolean).slice(0, 2);
+  }
+
+  function wikiLabel(url) {
+    try {
+      var host = new URL(url, location.href).hostname.replace(/^www\./, '');
+      if (/\.wikipedia\.org$/i.test(host) || host === 'wikipedia.org') return 'Wikipedia';
+    } catch (e) { /* keep Learn more */ }
+    return 'Learn more';
+  }
+
+  function linkEl(href, label, cls) {
+    var a = doc.createElement('a');
+    a.className = cls;
+    a.href = href;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.textContent = label;
+    return a;
   }
 
   function build() {
@@ -45,12 +89,34 @@
     tip.hidden = true;
     tip.innerHTML = '<span class="gl-term"></span><span class="gl-en"></span>' +
       '<span class="gl-bg"><span class="gl-lang" aria-hidden="true">BG</span><span class="gl-bg-text" lang="bg"></span></span>' +
+      '<span class="gl-links" hidden></span>' +
       '<span class="gl-arrow" aria-hidden="true"></span>';
-    parts = { term: tip.querySelector('.gl-term'), en: tip.querySelector('.gl-en'), bg: tip.querySelector('.gl-bg'), bgText: tip.querySelector('.gl-bg-text') };
+    parts = {
+      term: tip.querySelector('.gl-term'),
+      en: tip.querySelector('.gl-en'),
+      bg: tip.querySelector('.gl-bg'),
+      bgText: tip.querySelector('.gl-bg-text'),
+      links: tip.querySelector('.gl-links')
+    };
     // Hovering the popup itself keeps a hover-opened popup open.
     tip.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') clearTimeout(hideTimer); });
     tip.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse' && openedBy === 'hover') hideSoon(); });
+    // Keep focus on the term when clicking a link so the tip doesn't close before navigation.
+    tip.addEventListener('mousedown', function (e) { if (e.target.closest('a')) e.preventDefault(); });
     doc.body.appendChild(tip);
+  }
+
+  function fillLinks(el) {
+    var box = parts.links;
+    while (box.firstChild) box.removeChild(box.firstChild);
+    var wiki = (el.getAttribute('data-wiki') || '').trim();
+    var shorts = parseShorts(el.getAttribute('data-shorts'));
+    if (!wiki && !shorts.length) { box.hidden = true; return; }
+    if (wiki) box.appendChild(linkEl(wiki, wikiLabel(wiki), 'gl-wiki'));
+    shorts.forEach(function (url, i) {
+      box.appendChild(linkEl(url, 'Short ' + (i + 1), 'gl-short'));
+    });
+    box.hidden = false;
   }
 
   /* ---- positioning ---- */
@@ -92,6 +158,7 @@
     parts.en.hidden = !en;
     parts.bgText.textContent = bg;
     parts.bg.hidden = !bg;
+    fillLinks(el);
     // Light popup over dark sections, dark popup elsewhere (light panels such as .kmap-panel reset it).
     var ctx = el.closest('.band,.hero,.card.dark,.player,.kmap-panel');
     tip.classList.toggle('on-dark', !!ctx && !ctx.classList.contains('kmap-panel'));
