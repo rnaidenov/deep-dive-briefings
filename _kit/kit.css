@@ -398,6 +398,27 @@ body.has-player{padding-bottom:calc(var(--player-h,96px) + 28px)}
 .spin{animation:kit-spin 8s linear infinite;transform-origin:center;transform-box:fill-box}
 .bob{animation:kit-bob 3s ease-in-out infinite}
 
+/* ---------- Read more / Watch more (.rw) ---------- */
+.rw-group{margin:26px 0 0}
+.rw-group>h3{font:700 .78rem/1.4 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.rw-list{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+@media(min-width:760px){.rw-list{grid-template-columns:1fr 1fr}}
+.rw-item{background:var(--paper);border:1px solid rgba(12,22,56,.05);border-radius:var(--r-sm);box-shadow:var(--shadow);padding:14px 16px}
+.rw-item>:last-child{margin-bottom:0}
+.rw-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:.8rem;color:var(--muted);margin-bottom:4px}
+.rw-type{--c:var(--sky);--ct:var(--sky-t);--cd:var(--sky-d);display:inline-block;font:700 .66rem/1.4 var(--sans);letter-spacing:.07em;text-transform:uppercase;padding:3px 9px;border-radius:var(--r-pill);background:var(--ct);color:var(--cd)}
+.rw-type.doc{--ct:var(--violet-t);--cd:var(--violet-d)}
+.rw-type.youtube{--ct:var(--coral-t);--cd:var(--coral-d)}
+.rw-type.short{--ct:var(--pink-t);--cd:var(--pink-d)}.rw-type.short::before{content:"▶ ";font-size:.6rem}
+.rw-type.book{--ct:var(--sun-t);--cd:var(--sun-d)}
+.rw-type.article{--ct:var(--mint-t);--cd:var(--mint-d)}
+.rw-title{display:block;font-weight:700;color:var(--ink);text-decoration:none;line-height:1.35}
+.rw-title:hover{text-decoration:underline}
+.rw-note{margin:4px 0 0;font-size:.92rem;color:var(--muted)}
+.band .rw-item,.card.dark .rw-item{background:var(--navy-700);color:var(--on-dark);border-color:rgba(255,255,255,.06)}
+.band .rw-title{color:#fff}
+@media print{.rw-item{box-shadow:none;border:1px solid #ccc}}
+
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;transition-delay:0s!important}

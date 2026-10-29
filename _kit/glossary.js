@@ -26,6 +26,11 @@
    Terms with no explainer and no translation are left as plain text.
    External links open in a new tab (target=_blank rel=noopener). Shorts are chips, not embeds.
 
+   STANDING RULE (Shorts on fundamentals): every fundamental term on a page (the concepts the
+   explanation rests on) should carry a YouTube Short when a good one exists, and a MECHANISM Short
+   (shows how/why it works) is preferred over a definition or trivia clip. Put the best one first.
+   Also list it in the page's "Read more / Watch more" Quick watch group (see README).
+
    API: Kit.glossary.scan(root) (enhance terms inside root, e.g. content rendered later; .init(root) is the same
         and also runs the one-time setup if needed), .refresh() (scan the whole page), .open(el), .close(),
         .isOpen(), .data (merged JSON) */

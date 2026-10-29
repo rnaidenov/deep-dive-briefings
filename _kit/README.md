@@ -9,6 +9,7 @@ _kit/
   chart.js       slider-bound SVG line chart: Kit.chart(el, opts) or <div data-chart>
   svg.js         SVG diagram helpers: Kit.svg.create/line/rect/circle/text/arrow/path/group/draw/pop
   audio.js       sticky audio player + lock-screen MediaSession controls: <div data-audio>
+  read-watch.snippet.html  copy-paste "Read more / Watch more" section (pure CSS, .rw-* in kit.css)
   glossary.js    inline term popups (English + Bulgarian, optional Wikipedia/Learn more + YouTube Shorts): <dfn class="term">, optional glossary.json
   mindmap.js     interactive radial mind map for book notes: <div data-mindmap="mindmap.json">
   fonts/         Inter 400/700, Fraunces 700 + 400 italic (woff2, self-hosted)
@@ -79,6 +80,7 @@ The `<noscript>` stylesheet uses `../_kit/kit.css`, which is right for topic pag
 | Draw-on stroke (static SVG) | `data-draw` on a `<path>`/`<line>` |
 | Accent colour | `:root { --accent: var(--mint) }` |
 | Glossary term | `<dfn class="term" data-en="Plain explainer" data-bg="превод">word</dfn>`; optional `data-wiki` / `data-shorts`; `data-term="key"` if the text differs |
+| Read more / Watch more | `<section id="read-watch">` with `.rw-group` > `.rw-list` > `.rw-item` (`.rw-type doc|youtube|short|book|article`); paste `_kit/read-watch.snippet.html` |
 | Glossary file | `<body data-glossary="glossary.json">` |
 | Only with JS / only without | `class="js-only"` / `class="no-js"` |
 | Mind map (book notes) | `<div data-mindmap="mindmap.json">` + a `.no-js` outline inside; add `'mindmap'` to the loader's script list |
@@ -112,6 +114,8 @@ Inline attrs (optional): `data-wiki="https://…"` and `data-shorts="url1,url2"`
 ```
 
 In the popup: Wikipedia hosts get a **Wikipedia** chip; any other `wiki` URL gets **Learn more**. Shorts render as **Short 1** / **Short 2** play chips. Deep Dive picks the videos per topic — the kit does not curate them.
+
+**Standing rule: Shorts on fundamental terms.** Every fundamental term (the concepts the page's explanation rests on) gets a YouTube Short when a good one exists. Prefer a **mechanism Short**, one that shows *how/why* it works, over a definition or trivia clip, and put it first in `shorts`. Mirror the best ones in the page's Read more / Watch more "Quick watch" group.
 
 **Behaviour.**
 - Mouse: opens on hover. You can move into the popup; clicking the term keeps it open.
@@ -186,6 +190,21 @@ Or from JS: `var map = Kit.mindmap(el, 'mindmap.json')` (or pass the data object
 While the note is open, it follows the arrow-key focus. A polite live region announces "Characters expanded, 5 items" or "… collapsed", and the tree is described by a short visually hidden help text. Arrow keys inside the map don't change steps (`steps.js` respects `preventDefault`), and taps inside it don't advance a `data-step-tap` step.
 
 **API.** `Kit.mindmap(el, urlOrData)` returns `map`. `map.ready` (a Promise), `.expand(id)`, `.collapse(id)`, `.toggle(id)`, `.select(id)` (unfold the path and open the note), `.close()`, `.fit()`, `.expandAll()`, `.collapseAll()`, `.nodes` (by id). It fires `kit:mindmap` on the element with `{action: 'expand'|'collapse'|'select'|'close', id, node}`.
+
+## Read more / Watch more
+
+Every explain/deep-dive page should end with a curated "Read more / Watch more" section, placed before Sources (Sources are receipts for claims; this is where to go next). Pure CSS, no JS, works without JS and in `.band`.
+
+1. Paste `_kit/read-watch.snippet.html` (also live in the template, step `read-watch`) above the Sources section.
+2. Fill each item: type chip, meta (channel/author · year · length), link, and one-line **Why**.
+3. Types: `doc` (Documentary), `youtube`, `short`, `book`, `article`. Groups: Quick watch · Shorts / Watch / Read. Delete empty groups; keep 1–4 items each.
+4. Quick watch = mechanism Shorts for fundamental terms (same ones as the glossary).
+
+```html
+<li class="rw-item"><div class="rw-meta"><span class="rw-type youtube">YouTube</span>Channel · 12 min</div>
+  <a class="rw-title" href="URL" target="_blank" rel="noopener">Title</a>
+  <p class="rw-note">Why: one line.</p></li>
+```
 
 ## No-JS fallbacks
 
