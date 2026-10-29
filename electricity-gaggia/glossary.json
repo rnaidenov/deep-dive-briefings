@@ -1,0 +1,55 @@
+{
+  "jumper": {
+    "en": "A short wire that joins two terminals so current can pass straight through.",
+    "bg": "мост (джъмпер)",
+    "wiki": "https://en.wikipedia.org/wiki/Jumper_(computing)",
+    "shorts": [
+      "https://www.youtube.com/shorts/GaqvOrsJCUs"
+    ]
+  },
+  "line": {
+    "en": "The live supply conductor. It carries the 230 V relative to earth.",
+    "bg": "фаза (линия)",
+    "wiki": "https://en.wikipedia.org/wiki/IEC_60446",
+    "shorts": [
+      "https://www.youtube.com/shorts/hCKvSWVH7qs",
+      "https://www.youtube.com/shorts/XNWiaYwEGiU"
+    ]
+  },
+  "neutral": {
+    "en": "The return conductor that completes the loop; bonded to earth by the supplier, but still part of the working circuit.",
+    "bg": "нула",
+    "wiki": "https://en.wikipedia.org/wiki/Ground_and_neutral",
+    "shorts": [
+      "https://www.youtube.com/shorts/Z4ePqG9BKaQ",
+      "https://www.youtube.com/shorts/9FGIy5hW09Y"
+    ]
+  },
+  "earth": {
+    "en": "Protective conductor tied to the metal chassis. Carries current only during a fault.",
+    "bg": "заземяване",
+    "wiki": "https://en.wikipedia.org/wiki/Ground_(electricity)",
+    "shorts": [
+      "https://www.youtube.com/shorts/Tm4U7vlWWug",
+      "https://www.youtube.com/shorts/MeSQkrClwRI"
+    ]
+  },
+  "spade": {
+    "en": "Flat push-on terminal (female spade on the wire, male tab on the part).",
+    "bg": "кабелна обувка / конектор",
+    "wiki": "https://en.wikipedia.org/wiki/Electrical_connector",
+    "shorts": [
+      "https://www.youtube.com/shorts/gV9AE55nbrY",
+      "https://www.youtube.com/shorts/DI6bQAU8_Rc"
+    ]
+  },
+  "ssr": {
+    "en": "Solid-state relay: an electronic switch where a small low-voltage signal turns a mains load on and off, with no moving contacts.",
+    "bg": "твърдотелно реле (SSR)",
+    "wiki": "https://en.wikipedia.org/wiki/Solid-state_relay",
+    "shorts": [
+      "https://www.youtube.com/shorts/1PFhg5pJ-oU",
+      "https://www.youtube.com/shorts/v5iBgpa15jo"
+    ]
+  }
+}
