@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#13204a">
+<!-- Favicon: inline SVG, so it needs no path. EDIT: swap the fill colours to match the accent if you like. -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2313204a'/%3E%3Ccircle cx='27' cy='36' r='15' fill='%23ffc23d'/%3E%3Ccircle cx='45' cy='20' r='8' fill='%23ff6b57'/%3E%3C/svg%3E">
+<!-- EDIT: page title + description -->
+<title>Electricity fundamentals for Gaggia / GaggiMate work · Deep Dive</title>
+<meta name="description" content="Line, neutral, earth, jumpers and the three GaggiMate paths: just enough electricity to work safely mid-install.">
+<script>
+  /* Kit loader. Topic pages live at /<slug>/, so the kit is "../_kit/".
+     The one exception is this template previewed in place at /_kit/template/, where the kit is "../".
+     Leave this block as-is when copying the template. */
+  var KIT = /\/_kit\/template\/(index\.html)?$/.test(location.pathname) ? '../' : '../_kit/';
+  document.documentElement.classList.add('js');
+  document.write('<link rel="stylesheet" href="' + KIT + 'kit.css">');
+  // Failsafe: if the kit scripts didn't load, drop the hidden-until-revealed states.
+  addEventListener('load', function () { if (!(window.Kit && Kit.steps)) document.documentElement.classList.remove('js'); });
+</script>
+<noscript><link rel="stylesheet" href="../_kit/kit.css"></noscript>
+<style>
+  /* Page-specific styles (optional). Pick this page's accent: */
+  :root { --accent: var(--coral); }
+</style>
+</head>
+<!-- data-glossary: optional terms file for <dfn class="term"> (see glossary.js). Copy glossary.json too, or drop the attribute. -->
+<body data-step-nav>
+<header class="hero"><div class="wrap">
+<a class="back" href="../">← All briefings</a><br>
+<span class="kicker">Machines · 29 Oct 2026</span>
+<h1>Electricity for the Gaggia, <em class="accent">just enough.</em></h1>
+<p class="lede">Line, neutral, earth, jumpers and the three GaggiMate paths. Short, practical, for reading mid-install with the machine unplugged.</p>
+<div class="meta"><span>⏱ 5 min read</span><span>🎧 ~3 min audio</span><a href="#sources">6 sources</a></div>
+</div></header>
+<main>
+
+<section data-step="tldr"><div class="wrap">
+<span class="kicker">The short version</span><h2>Three things to keep</h2>
+<ol class="points">
+<li><span class="pill fact">Fact</span>Current only flows around a <b>closed loop</b>. A switch, a thermostat or a <dfn class="term" data-en="A short wire that joins two terminals so current can pass straight through." data-bg="мост (джъмпер)">jumper</dfn> just opens or closes that loop. <a class="cite" href="#S3">S3</a></li>
+<li><span class="pill fact">Fact</span>EU colours: <b>brown = <dfn class="term" data-en="The live supply conductor. It carries the 230 V relative to earth." data-bg="фаза (линия)">Line</dfn></b>, <b>blue = <dfn class="term" data-en="The return conductor that completes the loop; bonded to earth by the supplier, but still part of the working circuit." data-bg="нула">Neutral</dfn></b>, <b>green/yellow = <dfn class="term" data-en="Protective conductor tied to the metal chassis. Carries current only during a fault." data-bg="заземяване">Earth</dfn></b>. <a class="cite" href="#S1">S1</a> <a class="cite" href="#S2">S2</a></li>
+<li><span class="pill fact">Fact</span>GaggiMate's first safety step is: <b>unplug the machine</b> so nothing is live while you work. <a class="cite" href="#S4">S4</a></li>
+</ol></div></section>
+
+<section data-step="idea"><div class="wrap">
+<span class="kicker">First principles</span><h2>Loops, switches, and the fault path</h2>
+<div class="card"><p><span class="pill fact">Fact</span> A circuit is a closed loop that gives current a return path; without the loop it is an <b>open circuit</b> and nothing flows. <a class="cite" href="#S3">S3</a></p>
+<p>In the Gaggia, current leaves on Line (brown), goes through a part (heater, pump, valve), and comes back on Neutral (blue). Every switch and thermostat in between is just a gate in that loop.</p>
+<p><span class="pill fact">Fact</span> Earth is <b>not</b> the working path. It ties exposed metal to a low-impedance route so that if a live wire touches the chassis, a big fault current flows and trips the breaker/RCD or blows a fuse. <a class="cite" href="#S5">S5</a></p></div>
+<div class="callout key"><span class="callout-title">What "hot" means</span><span class="pill what">Plain</span> "Hot" or "live" is everyday wording for the Line conductor: the one at mains voltage relative to earth. In UK/EU terms both Line and Neutral count as live (current-carrying) conductors; earth does not. <a class="cite" href="#S2">S2</a> Treat <b>both</b> brown and blue as dangerous while plugged in.</div>
+</div></section>
+
+<section data-step="colours" id="colours"><div class="wrap">
+<span class="kicker">Colours</span><h2>Brown, blue, green/yellow</h2>
+<ol class="points">
+<li><span class="pill fact">Fact</span><b>Brown</b> — single AC phase (Line). IEC 60446/60445 colour scheme, which EU wiring is harmonised with. <a class="cite" href="#S1">S1</a> <a class="cite" href="#S2">S2</a></li>
+<li><span class="pill fact">Fact</span><b>Blue</b> — Neutral. <a class="cite" href="#S1">S1</a></li>
+<li><span class="pill fact">Fact</span><b>Green/yellow</b> — always and only the protective (earth) conductor. <a class="cite" href="#S1">S1</a></li>
+</ol>
+<div class="callout warn"><span class="callout-title">Colour is not identity inside the machine</span><span class="pill op">Opinion</span> The internal Gaggia wires (grey, white, black, the kit's red/green/yellow) are not mains-standard colours. GaggiMate has you <b>label by position</b> (BT.A, S.5, C.4, PMP.B…) for that reason; trust the label, not the colour. <a class="cite" href="#S4">S4</a></div>
+<p><span class="pill fact">Fact</span> The cup-warmer has two <b>grounding wires</b> you disconnect to lift it off; GaggiMate says reconnect them on reassembly. <a class="cite" href="#S4">S4</a> That is the earth bond for the metal chassis: don't skip it.</p>
+</div></section>
+
+<section data-step="jumper" class="band"><div class="wrap">
+<span class="kicker">Spades &amp; jumpers</span><h2>Why the red BT.A–BT.B jumper exists</h2>
+<p>Each <dfn class="term" data-en="Flat push-on terminal (female spade on the wire, male tab on the part)." data-bg="кабелна обувка / конектор">spade</dfn> connector is one point in a loop. Pull it off and the loop is open.</p>
+<p><span class="pill fact">Fact</span> The stock brew thermostat sits in series in the heater loop. GaggiMate has you remove it and <b>bridge BT.A and BT.B with the small red jumper</b>, securely and insulated. <a class="cite" href="#S4">S4</a></p>
+<p><span class="pill op">Reasoning</span> Removing the thermostat would leave the loop open, so the heater could never run. The jumper restores <b>continuity</b>, and temperature control moves to the thermocouple + board + SSR instead. See the <a href="https://rnaidenov.github.io/deep-dive-briefings/gaggia-gaggimate/#jumper">Gaggia briefing → jumper</a>.</p>
+</div></section>
+
+<section data-step="paths"><div class="wrap">
+<span class="kicker">High level</span><h2>Three paths — don't mix them up</h2>
+<div class="card coral"><h3>1 · Heater → SSR</h3><p><span class="pill fact">Fact</span> ST.A/ST.B are extended with yellow wires to the <b>OUTPUT</b> side of the <dfn class="term" data-en="Solid-state relay: an electronic switch where a small low-voltage signal turns a mains load on and off, with no moving contacts." data-bg="твърдотелно реле (SSR)">SSR</dfn>; the yellow/black signal cable goes to its input. The SSR switches the <b>heater only</b>. <a class="cite" href="#S4">S4</a> <a class="cite" href="#S6">S6</a></p></div>
+<div class="card sky"><h3>2 · Pump → board P</h3><p><span class="pill fact">Fact</span> The kit's green wire goes from the pump's PMP.B position to the board's <b>P/Pump</b> connector. <a class="cite" href="#S4">S4</a> The pump is <b>not</b> on the SSR.</p></div>
+<div class="card mint"><h3>3 · Valve → board V</h3><p><span class="pill fact">Fact</span> The original PMP.B lead (grey; the one <b>not</b> going into the pump's thermal fuse) is extended with the red wire to the board's <b>V/Valve</b> connector. <a class="cite" href="#S4">S4</a></p></div>
+<p>Plus the board's own feed: C.4 (brown) → <b>L/Line</b> via the grey kit wire; S.5 (white) → <b>N/Neutral</b> via the blue kit wire. <a class="cite" href="#S4">S4</a> Where-is-what: <a href="https://rnaidenov.github.io/deep-dive-briefings/gaggia-gaggimate/#find-bt-st-pmp">BT / ST / PMP finder</a> · <a href="https://rnaidenov.github.io/deep-dive-briefings/gaggia-gaggimate/#explore-3d">3D explore</a> · <a href="https://gaggimate-companion.vercel.app">companion</a>.</p>
+</div></section>
+
+<section data-step="habits"><div class="wrap">
+<span class="kicker">Habits</span><h2>Safe habits, every time</h2>
+<ol class="points">
+<li><span class="pill fact">Fact</span><b>Unplug</b> at the wall before opening; work dry. <a class="cite" href="#S4">S4</a></li>
+<li><span class="pill op">Opinion</span><b>Don't probe live</b> mid-install. Test only after it's closed up, per the guide's final checks.</li>
+<li><span class="pill fact">Fact</span><b>Never join earth to Line or Neutral</b>; green/yellow is exclusively protective. <a class="cite" href="#S1">S1</a></li>
+<li><span class="pill op">Opinion</span><b>Leave mains brown/blue alone</b> unless the guide names that exact wire (e.g. C.4, S.5).</li>
+<li><span class="pill fact">Fact</span><b>Label by position</b>, not colour, and keep a record of your wiring. <a class="cite" href="#S4">S4</a></li>
+<li><span class="pill fact">Fact</span><b>Insulate every join</b> and every removed end with tape or heatshrink. If unsure, ask a professional. <a class="cite" href="#S4">S4</a></li>
+</ol></div></section>
+
+<section data-step="sources" id="sources" class="sources"><div class="wrap">
+<span class="kicker">Receipts</span><h2>Sources</h2>
+<p>All opened 29 Oct 2026. Official HD 308 / IEC 60445 texts are paywalled; S1 summarises the IEC colour scheme.</p>
+<ol class="source-list">
+<li id="S1"><span class="src-id">S1</span><div><a class="src-title" href="https://en.wikipedia.org/wiki/IEC_60446">IEC 60446 (now IEC 60445) — conductor colours</a><span class="src-meta"><span class="src-type">Web</span>Wikipedia</span><p class="src-note">Brown = single phase, blue = neutral, green/yellow exclusively protective.</p></div></li>
+<li id="S2"><span class="src-id">S2</span><div><a class="src-title" href="https://en.wikipedia.org/wiki/Electrical_wiring_in_the_United_Kingdom">Electrical wiring in the United Kingdom</a><span class="src-meta"><span class="src-type">Web</span>Wikipedia</span><p class="src-note">L brown / N blue / E green-yellow; line and neutral are live conductors, earth is not; harmonised with Europe/IEC 60446.</p></div></li>
+<li id="S3"><span class="src-id">S3</span><div><a class="src-title" href="https://en.wikipedia.org/wiki/Electric_circuit">Electrical network / circuit</a><span class="src-meta"><span class="src-type">Web</span>Wikipedia</span><p class="src-note">Circuit = closed loop with return path; no loop = open circuit.</p></div></li>
+<li id="S4"><span class="src-id">S4</span><div><a class="src-title" href="https://docs.gaggimate.eu/docs/installation-gcp/">GaggiMate — Gaggia Classic Pro/Evo installation</a><span class="src-meta"><span class="src-type">Web</span>GaggiMate docs</span><p class="src-note">Unplug, high-voltage safety, ground wires, red BT jumper, SSR wiring, L/N/P/V connections, insulation.</p></div></li>
+<li id="S5"><span class="src-id">S5</span><div><a class="src-title" href="https://en.wikipedia.org/wiki/Ground_(electricity)">Ground (electricity)</a><span class="src-meta"><span class="src-type">Web</span>Wikipedia</span><p class="src-note">Protective earth gives exposed metal a low-impedance fault path that trips breakers/RCDs.</p></div></li>
+<li id="S6"><span class="src-id">S6</span><div><a class="src-title" href="https://en.wikipedia.org/wiki/Solid-state_relay">Solid-state relay</a><span class="src-meta"><span class="src-type">Web</span>Wikipedia</span><p class="src-note">How an SSR switches an AC load electronically.</p></div></li>
+</ol></div></section>
+<footer class="footer"><div class="wrap">Narration: neural TTS voice. Not a substitute for a qualified electrician. · <a href="../">All briefings</a> · <a href="https://rnaidenov.github.io/deep-dive-briefings/gaggia-gaggimate/">Gaggia briefing</a></div></footer>
+</main>
+<div class="player" data-audio="audio.mp3" data-title="Electricity for the Gaggia" data-artist="Deep Dive" data-album="Deep Dive briefings">
+<audio controls preload="metadata" src="audio.mp3"><a href="audio.mp3">Download the narration (MP3)</a></audio></div>
+<script>['svg', 'chart', 'steps', 'audio', 'glossary'].forEach(function (f) { document.write('<script src="' + KIT + f + '.js"><\/script>'); });</script>
+</body></html>
