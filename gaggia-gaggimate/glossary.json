@@ -26,7 +26,7 @@
     ]
   },
   "boiler": {
-    "en": "The small metal tank with a heating element that heats the water. On the E24 it is brass.",
+    "en": "The small metal tank with a heating element that heats the water. On the E24 it is brass. It heats; it does not create brew pressure — that comes from the pump.",
     "bg": "бойлер, котел",
     "wiki": "https://en.wikipedia.org/wiki/Boiler",
     "shorts": [
@@ -35,14 +35,14 @@
     ]
   },
   "vibratory pump": {
-    "en": "A pump with an electromagnet that shakes a small piston back and forth many times a second. Cheap, compact and noisy.",
+    "en": "A pump with an electromagnet that shakes a small piston back and forth many times a second. It sucks water from the tank and pushes it toward the boiler under pressure. Cheap, compact and noisy.",
     "bg": "вибрационна помпа",
     "shorts": [
       "https://www.youtube.com/shorts/qoWZq5EnjLo"
     ]
   },
   "OPV": {
-    "en": "Over-pressure valve. A spring-loaded valve that dumps extra water back to the tank once pressure passes its set point.",
+    "en": "Over-pressure valve. A spring-loaded relief valve on the pump outlet: it does not measure pressure; when force beats the spring it dumps extra water back to the tank (typically around 9–12 bar).",
     "bg": "предпазен клапан за свръхналягане",
     "wiki": "https://en.wikipedia.org/wiki/Relief_valve",
     "shorts": [
